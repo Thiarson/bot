@@ -1,8 +1,11 @@
 "use client";
 
 import Link from 'next/link';
-import { useState } from 'react';
+import { useSearchParams } from 'next/navigation';
+import { useState, useActionState } from 'react';
 import { Eye, EyeOff, ArrowRight, Mail, Lock, Chrome } from 'lucide-react';
+import { ExclamationCircleIcon } from '@heroicons/react/24/solid';
+import { authenticate } from '@/lib/auth/actions';
 
 import Divider from '@/components/auth/divider';
 
@@ -13,6 +16,12 @@ function LoginForm() {
     password: '',
     rememberMe: false
   });
+  const [ errorMessage, formAction, isPending ] = useActionState(
+    authenticate,
+    undefined,
+  );
+  const searchParams = useSearchParams();
+  const callbackUrl = searchParams.get('callbackUrl') || '/chat';
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value, type, checked } = e.target;
@@ -21,13 +30,6 @@ function LoginForm() {
       ...prev,
       [name]: type === 'checkbox' ? checked : value
     }));
-  };
-
-  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-    
-    // Handle login logic here
-    console.log('Login attempt:', formData);
   };
 
   return (
@@ -54,7 +56,7 @@ function LoginForm() {
         <Divider>or continue with email</Divider>
 
         {/* Login Form */}
-        <form onSubmit={handleSubmit} className="space-y-6">
+        <form action={formAction} className="space-y-6">
           <div>
             <label htmlFor="email" className="block text-sm font-medium text-gray-300 mb-2">
               Email address
@@ -130,13 +132,22 @@ function LoginForm() {
             </div>
           </div>
 
+          <input type="hidden" name="redirectTo" value={callbackUrl} />
           <button
             type="submit"
-            className="group w-full flex items-center justify-center space-x-2 px-4 py-3 bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 rounded-lg transition-all transform hover:scale-[1.02] font-semibold shadow-lg"
+            disabled={isPending}
+            className="group w-full flex items-center justify-center space-x-2 px-4 py-3 bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 rounded-lg transition-all transform hover:scale-[1.02] font-semibold shadow-lg disabled:from-gray-600 disabled:to-gray-700 disabled:cursor-not-allowed disabled:hover:scale-100"
           >
             <span>Sign in</span>
             <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
           </button>
+          {/* Add form errors here */}
+          {errorMessage && (
+            <div className="flex space-x-1">
+              <ExclamationCircleIcon className="h-5 w-5 text-red-500" />
+              <p className="text-red-500">{errorMessage}</p>
+            </div>
+          )}
         </form>
       </div>
     </div>

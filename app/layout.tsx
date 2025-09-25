@@ -13,7 +13,7 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Catalyst - AI Career Acceleration Platform",
+  title: "Boost",
   description: "AI-powered career acceleration. Perfect your CV, ace interviews, and land your dream job. Your professional breakthrough starts here.",
 };
 

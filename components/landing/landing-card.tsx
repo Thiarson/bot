@@ -10,7 +10,7 @@ function LandingCard() {
             <Badge/>
 
             <h1 className="text-5xl md:text-7xl font-bold mb-6 leading-tight">
-                Meet Catalyst,
+                Meet Boost,
                 <br />
                 <span className="bg-gradient-to-r from-white via-gray-100 to-gray-300 bg-clip-text text-transparent">
                     The Future of 

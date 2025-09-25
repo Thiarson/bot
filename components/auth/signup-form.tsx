@@ -58,7 +58,7 @@ function SignupForm () {
       <div className="relative bg-black/80 backdrop-blur-xl border border-gray-800 rounded-2xl p-8">
         {/* Header */}
         <div className="text-center mb-8">
-          <h1 className="text-3xl font-bold mb-2">Create Catalyst account</h1>
+          <h1 className="text-3xl font-bold mb-2">Create Boost account</h1>
         </div>
 
         {/* Social Signup Buttons */}

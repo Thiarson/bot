@@ -1,9 +1,18 @@
 "use server";
 
+import axios from "axios";
 import { AuthError } from "next-auth";
 import { signIn, signOut } from "@/auth";
+import { apiUrl } from "@/config/api.config";
 
 import type { User } from "@/types/definitions";
+
+export interface ApiResponse<T> {
+    code: number;
+    status: "success" | "error";
+    message: string;
+    data: T;
+}
 
 export async function authenticate(
     prevState: string | undefined,
@@ -35,17 +44,22 @@ export async function logout() {
 
 export async function getUser(email: string): Promise<User | undefined> {
     try {
-        // const user = await sql<User[]>`SELECT * FROM users WHERE email=${email}`;
-        // return user[0];
+        const { data: response } = await axios.post<ApiResponse<User>>(
+            `${apiUrl}/auth/login`,
+            { email },
+        )
+
+        if (response.status === "error") throw new Error(response.message);
+        const user = response.data;
 
         return {
-            id: String(1),
-            name: "Admin",
-            email: "admin@boost.ai",
-            password: "$2a$12$QU3ssn0pjLG/PcL7cj57z.zsl3nIHd.BMErrziGPz0cx7cSWpdRvK", // Admin123
+            id: user.id,
+            name: user.name,
+            email: user.email,
+            password: user.password,
         };
-    } catch (error) {
-        console.error('Failed to fetch user:', error);
-        throw new Error('Failed to fetch user.');
+    } catch (e) {
+        console.error('Failed to fetch user:', e);
+        // throw new Error('Failed to fetch user.');
     }
 }

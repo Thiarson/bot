@@ -2,7 +2,8 @@
 
 import Link from "next/link";
 import { useState } from "react";
-import { ChevronDown, Menu, X, Zap } from "lucide-react";
+import { ChevronDown, Menu, X } from "lucide-react";
+import Logo from "@/components/logo";
 
 function LandingNavbar() {
     const [ isMenuOpen, setIsMenuOpen ] = useState(false);
@@ -10,12 +11,7 @@ function LandingNavbar() {
     return (
         <header className="relative z-50 px-6 py-4">
             <nav className="max-w-7xl mx-auto flex items-center justify-between">
-                <div className="flex items-center space-x-2">
-                    <div className="w-8 h-8 bg-gradient-to-r from-purple-500 to-blue-500 rounded-lg flex items-center justify-center">
-                        <Zap className="w-5 h-5 text-white" />
-                    </div>
-                    <span className="text-xl font-bold">Boost</span>
-                </div>
+                <Logo/>
 
                 {/* Desktop Navigation */}
                 <div className="hidden md:flex items-center space-x-8">

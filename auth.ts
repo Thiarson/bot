@@ -1,12 +1,11 @@
-import NextAuth from 'next-auth';
-import Credentials from 'next-auth/providers/credentials';
-import bcrypt from 'bcrypt';
-import { z } from 'zod';
-import { authConfig } from './auth.config';
+import NextAuth from "next-auth";
+import Credentials from "next-auth/providers/credentials";
+import bcrypt from "bcrypt";
+import { z } from "zod";
+import { authConfig } from "@/auth.config";
+import { getUser } from "@/lib/auth/actions";
 
-import type { User } from '@/types/definitions';
-
-export const { auth, signIn, signOut } = NextAuth({
+const nextAuthResult = NextAuth({
     ...authConfig,
     providers: [
         Credentials({
@@ -32,19 +31,5 @@ export const { auth, signIn, signOut } = NextAuth({
     ],
 });
 
-async function getUser(email: string): Promise<User | undefined> {
-    try {
-        // const user = await sql<User[]>`SELECT * FROM users WHERE email=${email}`;
-        // return user[0];
-
-        return {
-            id: String(1),
-            name: "Admin",
-            email: "admin@boost.ai",
-            password: "$2a$12$QU3ssn0pjLG/PcL7cj57z.zsl3nIHd.BMErrziGPz0cx7cSWpdRvK", // Admin123
-        };
-    } catch (error) {
-        console.error('Failed to fetch user:', error);
-        throw new Error('Failed to fetch user.');
-    }
-}
+export const { auth, signIn, signOut, handlers } = nextAuthResult;
+export const { GET, POST } = nextAuthResult.handlers;

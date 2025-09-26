@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { useSession } from "next-auth/react";
 import { 
   FileText, 
   MessageSquare, 
@@ -11,9 +12,15 @@ import {
   BookOpen,
   Settings,
 } from 'lucide-react'
+import { SidebarSkeleton } from "./skeleton";
 
 function ChatSidebar() {
     const [ activeTab, setActiveTab ] = useState('dashboard')
+    const { status } = useSession();
+
+    if (status === "loading") {
+        return <SidebarSkeleton/>;
+    }
 
     return (
         <aside className="w-64 bg-black border-r border-gray-800 min-h-screen p-6">

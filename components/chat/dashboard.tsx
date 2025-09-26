@@ -13,9 +13,15 @@ import {
   Users,
 } from 'lucide-react'
 
+import { DashboardSkeleton } from '@/components/chat/skeleton';
+
 function Dashboard() {
-    const { data: session } = useSession();
+    const { data: session, status } = useSession();
     const user = session?.user;
+
+    if (status === "loading") {
+        return <DashboardSkeleton/>;
+    }
 
     return (
         <main className="flex-1 p-6">

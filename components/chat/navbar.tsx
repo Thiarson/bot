@@ -16,9 +16,10 @@ import {
 } from 'lucide-react'
 
 import Logo from "@/components/logo";
+import { NavbarSkeleton } from '@/components/chat/skeleton';
 
 function ChatNavbar() {
-    const { data: session } = useSession();
+    const { data: session, status } = useSession();
     const [ isUserMenuOpen, setIsUserMenuOpen ] = useState(false)
     const userMenuRef = useRef<HTMLDivElement>(null)
 
@@ -38,6 +39,10 @@ function ChatNavbar() {
             document.removeEventListener('mousedown', handleClickOutside)
         }
     }, [])
+
+    if (status === "loading") {
+        return <NavbarSkeleton/>;
+    }
 
     return (
         <header className="bg-black border-b border-gray-800 px-6 py-4">

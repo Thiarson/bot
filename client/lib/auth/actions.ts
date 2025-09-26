@@ -21,6 +21,7 @@ export async function authenticate(
     try {
         await signIn('credentials', formData);
     } catch (e) {
+        console.log("autherr", e)
         if (e instanceof AuthError) {
             switch (e.type) {
                 case 'CredentialsSignin':
@@ -58,8 +59,9 @@ export async function getUser(email: string): Promise<User | undefined> {
             email: user.email,
             password: user.password,
         };
-    } catch (e) {
+    } catch (e: any) {
+        if (e.code === 'ECONNREFUSED') throw Error(e);
+        
         console.error('Failed to fetch user:', e);
-        // throw new Error('Failed to fetch user.');
     }
 }

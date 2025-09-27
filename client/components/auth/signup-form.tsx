@@ -1,8 +1,11 @@
 "use client";
 
 import Link from 'next/link';
-import { useState } from 'react';
+import { useSearchParams } from 'next/navigation';
+import { useActionState, useState } from 'react';
 import { Eye, EyeOff, ArrowRight, Mail, Lock, User, Chrome, Check } from 'lucide-react';
+import { register } from '@/lib/auth/actions';
+import { ExclamationCircleIcon } from '@heroicons/react/24/solid';
 
 import Divider from '@/components/auth/divider';
 
@@ -17,6 +20,12 @@ function SignupForm () {
     confirmPassword: '',
     acceptTerms: false,
   });
+  const [ errorMessage, formAction, isPending ] = useActionState(
+    register,
+    undefined,
+  );
+  const searchParams = useSearchParams();
+  const callbackUrl = searchParams.get('callbackUrl') || '/';
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value, type, checked } = e.target;
@@ -25,13 +34,6 @@ function SignupForm () {
       ...prev,
       [name]: type === 'checkbox' ? checked : value
     }));
-  };
-
-  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-
-    // Handle signup logic here
-    console.log('Signup attempt:', formData);
   };
 
   const getPasswordStrength = (password: string) => {
@@ -73,7 +75,7 @@ function SignupForm () {
         <Divider>or create with email</Divider>
 
         {/* Signup Form */}
-        <form onSubmit={handleSubmit} className="space-y-6">
+        <form action={formAction} className="space-y-6">
           {/* Name Fields */}
           <div className="grid grid-cols-2 gap-4">
             <div>
@@ -256,14 +258,22 @@ function SignupForm () {
             </div>
           </div>
 
+          <input type="hidden" name="redirectTo" value={callbackUrl} />
           <button
             type="submit"
-            disabled={!formData.acceptTerms || formData.password !== formData.confirmPassword}
+            disabled={!formData.acceptTerms || formData.password !== formData.confirmPassword || isPending}
             className="group w-full flex items-center justify-center space-x-2 px-4 py-3 bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 disabled:from-gray-600 disabled:to-gray-700 disabled:cursor-not-allowed rounded-lg transition-all transform hover:scale-[1.02] disabled:hover:scale-100 font-semibold shadow-lg"
           >
             <span>Create account</span>
             <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
           </button>
+          {/* Add form errors here */}
+          {errorMessage && (
+            <div className="flex space-x-1">
+              <ExclamationCircleIcon className="h-5 w-5 text-red-500" />
+              <p className="text-red-500">{errorMessage}</p>
+            </div>
+          )}
         </form>
       </div>
     </div>

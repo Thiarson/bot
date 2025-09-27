@@ -22,6 +22,22 @@ async function getUserByEmail(email: string): Promise<User | null> {
     return user;
 }
 
+async function insertUser(user: { name: string; email: string; password: string }): Promise<User> {
+    const result = await pg.user.create({
+        data: user,
+    });
+
+    const newUser: User = {
+        id: String(result.id),
+        name: result.name,
+        email: result.email,
+        password: result.password,
+    };
+
+    return newUser;
+}
+
 export {
     getUserByEmail,
+    insertUser,
 }

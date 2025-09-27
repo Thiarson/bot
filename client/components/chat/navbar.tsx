@@ -83,7 +83,7 @@ function ChatNavbar() {
 
                         {/* Dropdown Menu */}
                         {isUserMenuOpen && (
-                            <div className="absolute right-0 mt-2 w-56 bg-gray-900 border border-gray-700 rounded-lg shadow-xl z-50">
+                            <div className="absolute right-0 mt-2 w-64 bg-gray-900 border border-gray-700 rounded-lg shadow-xl z-50">
                                 <div className="p-3 border-b border-gray-700">
                                     <div className="flex items-center space-x-3">
                                         <div className="w-10 h-10 bg-gradient-to-r from-purple-500 to-blue-500 rounded-full flex items-center justify-center">

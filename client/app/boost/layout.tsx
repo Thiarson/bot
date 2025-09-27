@@ -1,22 +1,21 @@
 import { SessionProvider } from 'next-auth/react';
 
-import ChatNavbar from '@/components/chat/navbar';
-import ChatSidebar from '@/components/chat/sidebar';
-import Dashboard from '@/components/chat/dashboard';
+import Navbar from '@/components/boost/navbar';
+import Sidebar from '@/components/boost/sidebar';
 
-export default function Home() {
+export default function Layout({ children }: { children: React.ReactNode }) {
   return (
     <SessionProvider>
       <div className="min-h-screen bg-black text-white">
         {/* Header */}
-        <ChatNavbar/>
+        <Navbar/>
 
         <div className="flex max-w-7xl mx-auto">
             {/* Sidebar */}
-            <ChatSidebar/>
+            <Sidebar/>
 
             {/* Main Content */}
-            <Dashboard/>
+            {children}
         </div>
       </div>
     </SessionProvider>

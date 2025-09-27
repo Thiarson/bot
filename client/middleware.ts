@@ -14,7 +14,7 @@ export default async function middleware(request: NextRequest) {
     '/',
     '/login',
     '/signup', 
-    '/chat',
+    '/boost',
   ];
   
   // Skip validation for Next.js internal routes, API routes, and static files
@@ -42,7 +42,7 @@ export default async function middleware(request: NextRequest) {
   const isLoggedIn = !!session?.user;
   
   // Protected routes
-  const protectedRoutes = [ '/chat', ];
+  const protectedRoutes = [ '/boost', ];
   const isProtectedRoute = protectedRoutes.some(route => pathname.startsWith(route));
   
   if (isProtectedRoute && !isLoggedIn) {
@@ -51,7 +51,7 @@ export default async function middleware(request: NextRequest) {
   
   // Redirect logged-in users away from login/signup
   if (isLoggedIn && (pathname === '/' || pathname === '/login' || pathname === '/signup')) {
-    return NextResponse.redirect(new URL('/chat', request.url));
+    return NextResponse.redirect(new URL('/boost', request.url));
   }
   
   return NextResponse.next();

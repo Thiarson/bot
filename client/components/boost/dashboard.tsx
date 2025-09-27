@@ -13,7 +13,7 @@ import {
   Users,
 } from 'lucide-react'
 
-import { DashboardSkeleton } from '@/components/chat/skeleton';
+import { DashboardSkeleton } from '@/components/boost/skeleton';
 
 function Dashboard() {
     const { data: session, status } = useSession();

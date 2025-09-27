@@ -16,9 +16,9 @@ import {
 } from 'lucide-react'
 
 import Logo from "@/components/logo";
-import { NavbarSkeleton } from '@/components/chat/skeleton';
+import { NavbarSkeleton } from '@/components/boost/skeleton';
 
-function ChatNavbar() {
+function Navbar() {
     const { data: session, status } = useSession();
     const [ isUserMenuOpen, setIsUserMenuOpen ] = useState(false)
     const userMenuRef = useRef<HTMLDivElement>(null)
@@ -132,4 +132,4 @@ function ChatNavbar() {
     );
 }
 
-export default ChatNavbar
+export default Navbar;

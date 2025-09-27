@@ -13,8 +13,9 @@ import {
   Settings,
 } from 'lucide-react'
 import { SidebarSkeleton } from "./skeleton";
+import Link from "next/link";
 
-function ChatSidebar() {
+function Sidebar() {
     const [ activeTab, setActiveTab ] = useState('dashboard')
     const { status } = useSession();
 
@@ -26,16 +27,17 @@ function ChatSidebar() {
         <aside className="w-64 bg-black border-r border-gray-800 min-h-screen p-6">
             <nav className="space-y-2">
                 {[
-                    { id: 'dashboard', icon: TrendingUp, label: 'Dashboard' },
-                    { id: 'jobs', icon: Briefcase, label: 'Job Matching' },
-                    { id: 'cv', icon: FileText, label: 'CV Builder' },
-                    { id: 'interview', icon: MessageSquare, label: 'Interview Prep' },
-                    { id: 'networking', icon: Users, label: 'Networking' },
-                    { id: 'skills', icon: BookOpen, label: 'Skill Development' },
-                    { id: 'calendar', icon: Calendar, label: 'Calendar' },
-                    { id: 'settings', icon: Settings, label: 'Settings' }
-                ].map(({ id, icon: Icon, label }) => (
-                    <button
+                    { id: 'dashboard', icon: TrendingUp, label: 'Dashboard', href: '/boost/dashboard' },
+                    { id: 'cv', icon: FileText, label: 'CV Builder', href: '/boost/cv' },
+                    { id: 'jobs', icon: Briefcase, label: 'Job Matching', href: '/boost/job' },
+                    // { id: 'skills', icon: BookOpen, label: 'Skill Development', href: '/boost/skill' },
+                    // { id: 'interview', icon: MessageSquare, label: 'Interview Prep', href: '/boost/interview' },
+                    // { id: 'calendar', icon: Calendar, label: 'Calendar', href: '/boost/calendar' },
+                    // { id: 'networking', icon: Users, label: 'Networking', href: '/boost/networking' },
+                    { id: 'settings', icon: Settings, label: 'Settings', href: '/boost/setting' }
+                ].map(({ id, icon: Icon, label, href }) => (
+                    <Link
+                        href={href}
                         key={id}
                         onClick={() => setActiveTab(id)}
                         className={`w-full flex items-center space-x-3 px-3 py-2 rounded-lg text-left transition-colors ${
@@ -46,11 +48,11 @@ function ChatSidebar() {
                     >
                         <Icon className="w-4 h-4" />
                         <span className="text-sm">{label}</span>
-                    </button>
+                    </Link>
                 ))}
             </nav>
         </aside>
     );
 }
 
-export default ChatSidebar;
+export default Sidebar;

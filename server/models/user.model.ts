@@ -1,6 +1,6 @@
 import pg from "../database/pg";
 
-import type { User } from "../../client/types/definitions";
+import type { User } from "@bot/types";
 
 async function getUserByEmail(email: string): Promise<User | null> {
     const query = {

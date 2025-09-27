@@ -17,7 +17,7 @@ const nextAuthResult = NextAuth({
                 if (parsedCredentials.success) {
                     const { email, password } = parsedCredentials.data;
 
-                    const user = await getUser(email);
+                    const user = await getUser({ email });
                     if (!user) return null;
 
                     const passwordMatch = await bcrypt.compare(password, user.password);
@@ -70,7 +70,7 @@ export async function signUp(formData: FormData) {
     }
 
     const userInfo = parsedData.data
-    const userAlreadyExists = await getUser(userInfo.email);
+    const userAlreadyExists = await getUser({ email: userInfo.email });
 
     if (userAlreadyExists) throw Error('Email address already used');
 

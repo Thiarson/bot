@@ -7,9 +7,9 @@
   "type": "commonjs",
   "main": "index.js",
   "scripts": {
-    "start": "node dist/index.js",
+    "start": "node dist/src/index.js",
     "dev": "nodemon",
-    "build": "tsc",
+    "build": "tsc && tsc-alias",
     "postgres:migrate": "npx prisma migrate dev",
     "postgres:reset": "npx prisma migrate reset",
     "postgres:seed": "node scripts/seed.js",
@@ -22,9 +22,12 @@
     "nodemon": "^3.1.10",
     "prisma": "^6.16.2",
     "ts-node": "^10.9.2",
+    "tsc-alias": "^1.8.16",
+    "tsconfig-paths": "^4.2.0",
     "typescript": "^5.9.2"
   },
   "dependencies": {
+    "@bot/types": "file:../packages/shared",
     "@prisma/client": "^6.16.2",
     "bcrypt": "^6.0.0",
     "cors": "^2.8.5",

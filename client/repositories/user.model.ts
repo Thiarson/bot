@@ -1,24 +1,16 @@
 import axios from "axios";
 import { apiUrl } from "@/config/api.config";
 
-import type { User } from "@/types/definitions";
+import type { User } from "@bot/types";
+import type {
+    ApiResponse,
+    SignupRequestBody,
+    LoginRequestBody,
+} from "@bot/types";
 
-export interface ApiResponse<T> {
-    code: number;
-    status: "success" | "error";
-    message: string;
-    data: T;
-}
-
-type UserForm = {
-    name: string,
-    email: string,
-    password: string,
-};
-
-export async function createUser({ name, email, password }: UserForm) {
+export async function createUser({ name, email, password }: SignupRequestBody) {
     try {
-        const { data: response } = await axios.post<ApiResponse<{ id: string; email: string; name: string }>>(
+        const { data: response } = await axios.post<ApiResponse<User>>(
             `${apiUrl}/auth/signup`,
             { name, email, password },
         )
@@ -33,7 +25,7 @@ export async function createUser({ name, email, password }: UserForm) {
     }
 }
 
-export async function getUser(email: string): Promise<User | undefined> {
+export async function getUser({ email }: LoginRequestBody): Promise<User | undefined> {
     try {
         const { data: response } = await axios.post<ApiResponse<User>>(
             `${apiUrl}/auth/login`,
@@ -43,12 +35,7 @@ export async function getUser(email: string): Promise<User | undefined> {
         if (response.status === "error") throw new Error(response.message);
         const user = response.data;
 
-        return {
-            id: user.id,
-            name: user.name,
-            email: user.email,
-            password: user.password,
-        };
+        return user;
     } catch (e: any) {
         if (e.code === 'ECONNREFUSED') throw Error("Check your internet connection and try again");
         console.error('Failed to fetch user:', e);

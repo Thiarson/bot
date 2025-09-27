@@ -1,22 +1,12 @@
-import { getUserByEmail, insertUser } from "../../../../models/user.model";
-import { Request, Response } from "express-serve-static-core";
+import { getUserByEmail, insertUser } from "@models/user.model";
 
-interface LoginRequestBody {
-    email: string;
-}
-
-interface SignupRequestBody {
-    name: string;
-    email: string;
-    password: string;
-}
-
-interface ApiResponse<T> {
-    code: number;
-    status: "success" | "error";
-    message: string;
-    data: T;
-}
+import type { Request, Response } from "express-serve-static-core";
+import type { User } from "@bot/types";
+import type {
+    ApiResponse,
+    SignupRequestBody,
+    LoginRequestBody,
+} from "@bot/types";
 
 async function login(req: Request<{}, {}, LoginRequestBody>, res: Response<ApiResponse<any>>) {
     try {
@@ -25,7 +15,7 @@ async function login(req: Request<{}, {}, LoginRequestBody>, res: Response<ApiRe
 
         if (!user) throw new Error("User not found");
 
-        const response: ApiResponse<typeof user> = {
+        const response: ApiResponse<User> = {
             code: 200,
             status: "success",
             message: "Login successfully",
@@ -50,15 +40,11 @@ async function signup(req: Request<{}, {}, SignupRequestBody>, res: Response<Api
         const user = req.body;
         const newUser = await insertUser(user);
 
-        const response: ApiResponse<{ id: string; email: string; name: string }> = {
+        const response: ApiResponse<User> = {
             code: 201,
             status: "success",
             message: "User registered successfully",
-            data: {
-                id: newUser.id,
-                email: newUser.email,
-                name: newUser.name,
-            },
+            data: newUser,
         };
 
         return res.status(200).json(response);

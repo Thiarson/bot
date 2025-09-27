@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { useState } from "react";
 import { ChevronDown, Menu, X } from "lucide-react";
+
 import Logo from "@/components/logo";
 
 function LandingNavbar() {

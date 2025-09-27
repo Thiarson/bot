@@ -1,4 +1,4 @@
-import { ArrowRight, ChevronDown, Play, Zap } from "lucide-react";
+import { ArrowRight, Play } from "lucide-react";
 
 import Badge from "@/components/landing/badge";
 import StatsCard from "@/components/landing/stats-card";

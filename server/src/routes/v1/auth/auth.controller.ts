@@ -1,7 +1,9 @@
+import jwt from "jsonwebtoken";
+import { jwtSecret } from "@config/api.config";
 import { getUserByEmail, insertUser } from "@models/user.model";
 
 import type { Request, Response } from "express-serve-static-core";
-import type { User } from "@bot/types";
+import type { User, UserCredentials } from "@bot/types";
 import type {
     ApiResponse,
     SignupRequestBody,
@@ -14,12 +16,22 @@ async function login(req: Request<{}, {}, LoginRequestBody>, res: Response<ApiRe
         const user = await getUserByEmail(email);
 
         if (!user) throw new Error("User not found");
+        if (!jwtSecret) throw Error('JWT secret is not configured');
 
-        const response: ApiResponse<User> = {
+        const token = jwt.sign(
+            { id: user.id, email: user.email, name: user.name },
+            jwtSecret,
+            { expiresIn: '30d' },
+        );
+
+        const response: ApiResponse<UserCredentials> = {
             code: 200,
             status: "success",
             message: "Login successfully",
-            data: user,
+            data: {
+                user,
+                token,
+            },
         };
 
         return res.status(200).json(response);

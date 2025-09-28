@@ -5,6 +5,36 @@ import { z } from "zod";
 import { authConfig } from "@/auth.config";
 import { createUser, getUser } from "@/repositories/user.model";
 
+import "next-auth"
+import "next-auth/jwt"
+
+declare module "next-auth" {
+  interface Session {
+    user: {
+      id: string
+      name: string
+      email: string
+      token: string
+    }
+  }
+
+  interface User {
+    id: string
+    name: string
+    email: string
+    token: string
+  }
+}
+
+declare module "next-auth/jwt" {
+  interface JWT {
+    id: string
+    email: string
+    name: string
+    token: string
+  }
+}
+
 const nextAuthResult = NextAuth({
     ...authConfig,
     providers: [
@@ -17,16 +47,20 @@ const nextAuthResult = NextAuth({
                 if (parsedCredentials.success) {
                     const { email, password } = parsedCredentials.data;
 
-                    const user = await getUser({ email });
-                    if (!user) return null;
+                    const userCredentials = await getUser({ email });
+                    if (!userCredentials) return null;
 
+                    const { user, token } = userCredentials;
                     const passwordMatch = await bcrypt.compare(password, user.password);
 
                     // if (passwordMatch) return user;
                     if (passwordMatch) {
                         // Return user object without password
                         const { password: _, ...userWithoutPassword } = user;
-                        return userWithoutPassword;
+                        return {
+                            ...userWithoutPassword,
+                            token
+                        };
                     }
                 }
         
@@ -34,6 +68,28 @@ const nextAuthResult = NextAuth({
             },
         }),
     ],
+    callbacks: {
+        async jwt({ user, token }) {
+            if (user) {
+                token.id = user.id;
+                token.name = user.name;
+                token.email = user.email;
+                token.token = user.token;
+            }
+
+            return token;
+        },
+        async session({ session, token }) {
+            if (token) {
+                session.user.id = token.id;
+                session.user.email = token.email;
+                session.user.name = token.name;
+                session.user.token = token.token;
+            }
+
+            return session;
+        },
+    },
 });
 
 const signupSchema = z

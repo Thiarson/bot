@@ -7,7 +7,9 @@
     "strict": true,
     "baseUrl": ".",
     "paths": {
+      "@config/*": ["./config/*"],
       "@models/*": ["./models/*"],
+      "@middlewares/*": ["./src/middlewares/*"],
     }
   },
 }

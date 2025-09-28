@@ -1,7 +1,9 @@
 "use client";
 
-import { useState } from "react";
+import Link from "next/link";
+import { usePathname } from "next/navigation";
 import { useSession } from "next-auth/react";
+import { useState } from "react";
 import { 
   FileText, 
   MessageSquare, 
@@ -13,11 +15,13 @@ import {
   Settings,
 } from 'lucide-react'
 import { SidebarSkeleton } from "./skeleton";
-import Link from "next/link";
 
 function Sidebar() {
-    const [ activeTab, setActiveTab ] = useState('dashboard')
+    const pathname = usePathname();
+    const path = pathname.split('/')[2];
+    const activePath = path ? path : 'dashboard';
     const { status } = useSession();
+    const [ activeTab, setActiveTab ] = useState(activePath)
 
     if (status === "loading") {
         return <SidebarSkeleton/>;
@@ -29,12 +33,12 @@ function Sidebar() {
                 {[
                     { id: 'dashboard', icon: TrendingUp, label: 'Dashboard', href: '/boost/dashboard' },
                     { id: 'cv', icon: FileText, label: 'CV Builder', href: '/boost/cv' },
-                    { id: 'jobs', icon: Briefcase, label: 'Job Matching', href: '/boost/job' },
-                    // { id: 'skills', icon: BookOpen, label: 'Skill Development', href: '/boost/skill' },
+                    { id: 'job', icon: Briefcase, label: 'Job Matching', href: '/boost/job' },
+                    // { id: 'skill', icon: BookOpen, label: 'Skill Development', href: '/boost/skill' },
                     // { id: 'interview', icon: MessageSquare, label: 'Interview Prep', href: '/boost/interview' },
                     // { id: 'calendar', icon: Calendar, label: 'Calendar', href: '/boost/calendar' },
                     // { id: 'networking', icon: Users, label: 'Networking', href: '/boost/networking' },
-                    { id: 'settings', icon: Settings, label: 'Settings', href: '/boost/setting' }
+                    { id: 'setting', icon: Settings, label: 'Settings', href: '/boost/setting' }
                 ].map(({ id, icon: Icon, label, href }) => (
                     <Link
                         href={href}

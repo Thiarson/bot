@@ -128,7 +128,7 @@ function DashboardSkeleton() {
 
 function SidebarSkeleton() {
     return (
-        <aside className="w-64 bg-gray-900 border-r border-gray-800 p-6">
+        <aside className="w-64 h-screen bg-gray-900 border-r border-gray-800 p-6">
             <div className="space-y-6">
                 {/* Navigation Skeleton */}
                 <div>

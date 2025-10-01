@@ -1,11 +1,11 @@
-import { useState } from 'react';
+import { Dispatch, SetStateAction } from 'react';
 import { 
     Plus, 
     Trash2,
     X,
 } from 'lucide-react';
 
-interface Project {
+export interface Project {
     id: string;
     name: string;
     description: string;
@@ -14,18 +14,12 @@ interface Project {
     duration: string;
 }
 
-function CVProject() {
-    const [ projects, setProjects ] = useState<Project[]>([
-        {
-            id: '1',
-            name: 'E-commerce Platform',
-            description: 'Full-stack e-commerce solution with modern payment integration and real-time inventory management.',
-            technologies: ['React', 'Node.js', 'MongoDB', 'Stripe'],
-            url: 'https://github.com/username/ecommerce',
-            duration: '3 months'
-        }
-    ]);
+type PropsType = {
+    projects: Project[]
+    setProjects: Dispatch<SetStateAction<Project[]>>
+}
 
+function CVProject({ projects, setProjects }: PropsType) {
     const addProject = () => {
         const newProject: Project = {
             id: Date.now().toString(),

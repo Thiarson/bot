@@ -1,6 +1,5 @@
-import { Dispatch, SetStateAction, useRef, useState } from 'react';
+import { Dispatch, SetStateAction, useState } from 'react';
 import { 
-  Upload,
   Check,
   Star,
 } from 'lucide-react';
@@ -14,13 +13,11 @@ interface CVTemplate {
 
 type PropsType = {
     title: string
-    onChange: Dispatch<SetStateAction<string>>
+    setTitle: Dispatch<SetStateAction<string>>
 }
 
-function CVTemplate({ title, onChange }: PropsType) {
-    const fileInputRef = useRef<HTMLInputElement>(null);
+function CVTemplate({ title, setTitle }: PropsType) {
     const [ selectedTemplate, setSelectedTemplate ] = useState<string>('modern');
-    // const [cvTitle, setCvTitle] = useState<string>('My Professional CV');
 
     const templates: CVTemplate[] = [
         { id: 'modern', name: 'Modern Professional', thumbnail: '🎨', style: 'modern' },
@@ -28,15 +25,6 @@ function CVTemplate({ title, onChange }: PropsType) {
         { id: 'creative', name: 'Creative Design', thumbnail: '🌟', style: 'creative' },
         { id: 'minimal', name: 'Minimal Clean', thumbnail: '⚡', style: 'minimal' }
     ];
-
-    const handleFileImport = (event: React.ChangeEvent<HTMLInputElement>) => {
-        const file = event.target.files?.[0];
-        if (file) {
-            // Handle file import logic here
-            console.log('Importing file:', file.name);
-            // You would typically parse the file and populate the form data
-        }
-    };
     
     return (
         <div className="space-y-6">
@@ -44,22 +32,6 @@ function CVTemplate({ title, onChange }: PropsType) {
                 <div>
                     <h2 className="text-2xl font-semibold text-white mb-2">Choose Your Template</h2>
                     <p className="text-gray-400">Select a professional template that matches your style</p>
-                </div>
-                <div className="flex gap-3">
-                    <button
-                        onClick={() => fileInputRef.current?.click()}
-                        className="flex items-center gap-2 bg-gray-800 hover:bg-gray-700 text-white px-4 py-2 rounded-lg transition-colors border border-gray-600"
-                    >
-                        <Upload className="w-4 h-4" />
-                        Import CV
-                    </button>
-                    <input
-                        ref={fileInputRef}
-                        type="file"
-                        accept=".pdf,.doc,.docx,.json"
-                        onChange={handleFileImport}
-                        className="hidden"
-                    />
                 </div>
             </div>
             
@@ -98,7 +70,7 @@ function CVTemplate({ title, onChange }: PropsType) {
                         <input
                             type="text"
                             value={title}
-                            onChange={(e) => onChange(e.target.value)}
+                            onChange={(e) => setTitle(e.target.value)}
                             className="w-full max-w-md bg-gray-800 border border-gray-600 rounded-lg px-4 py-3 text-white focus:outline-none focus:ring-2 focus:ring-purple-500"
                             placeholder="My Professional CV"
                         />

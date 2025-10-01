@@ -1,11 +1,11 @@
-import { useState } from "react";
+import { Dispatch, SetStateAction } from "react";
 import { 
   Plus, 
   Trash2,
   X,
 } from 'lucide-react';
 
-interface Education {
+export interface Education {
   id: string;
   degree: string;
   institution: string;
@@ -15,19 +15,12 @@ interface Education {
   relevant_courses?: string[];
 }
 
-function CVEduction() {
-    const [ education, setEducation ] = useState<Education[]>([
-        {
-            id: '1',
-            degree: 'Bachelor of Computer Science',
-            institution: 'University of Antananarivo',
-            location: 'Antananarivo, MG',
-            graduationDate: '2022-06',
-            gpa: '3.8',
-            relevant_courses: ['Data Structures', 'Algorithms', 'Web Development', 'Database Systems']
-        }
-    ]);
+type PropsType = {
+    educations: Education[]
+    setEducations: Dispatch<SetStateAction<Education[]>>
+}
 
+function CVEduction({ educations, setEducations }: PropsType) {
     return (
         <div className="space-y-6">
             <div className="flex justify-between items-center">
@@ -43,7 +36,7 @@ function CVEduction() {
                         gpa: '',
                         relevant_courses: []
                         };
-                        setEducation([...education, newEdu]);
+                        setEducations([...educations, newEdu]);
                     }}
                     className="flex items-center gap-2 bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700 text-white px-4 py-2 rounded-lg transition-colors"
                 >
@@ -52,12 +45,12 @@ function CVEduction() {
                 </button>
             </div>
         
-            {education.map((edu, index) => (
+            {educations.map((edu, index) => (
                 <div key={edu.id} className="bg-gray-900 border border-gray-700 rounded-lg p-6">
                     <div className="flex justify-between items-start mb-4">
                         <h3 className="text-lg font-medium text-white">Education {index + 1}</h3>
                         <button
-                            onClick={() => setEducation(education.filter(e => e.id !== edu.id))}
+                            onClick={() => setEducations(educations.filter(e => e.id !== edu.id))}
                             className="text-red-400 hover:text-red-300 transition-colors"
                         >
                             <Trash2 className="w-4 h-4" />
@@ -71,7 +64,7 @@ function CVEduction() {
                                 type="text"
                                 value={edu.degree}
                                 onChange={(event) => {
-                                    setEducation(education.map(e => 
+                                    setEducations(educations.map(e => 
                                         e.id === edu.id ? { ...e, degree: event.target.value } : e
                                     ));
                                 }}
@@ -85,7 +78,7 @@ function CVEduction() {
                                 type="text"
                                 value={edu.institution}
                                 onChange={(event) => {
-                                    setEducation(education.map(e => 
+                                    setEducations(educations.map(e => 
                                         e.id === edu.id ? { ...e, institution: event.target.value } : e
                                     ));
                                 }}
@@ -99,7 +92,7 @@ function CVEduction() {
                                 type="text"
                                 value={edu.location}
                                 onChange={(event) => {
-                                    setEducation(education.map(e => 
+                                    setEducations(educations.map(e => 
                                         e.id === edu.id ? { ...e, location: event.target.value } : e
                                     ));
                                 }}
@@ -113,7 +106,7 @@ function CVEduction() {
                                 type="month"
                                 value={edu.graduationDate}
                                 onChange={(event) => {
-                                    setEducation(education.map(e => 
+                                    setEducations(educations.map(e => 
                                         e.id === edu.id ? { ...e, graduationDate: event.target.value } : e
                                     ));
                                 }}
@@ -128,7 +121,7 @@ function CVEduction() {
                             type="text"
                             value={edu.gpa}
                             onChange={(event) => {
-                                setEducation(education.map(e => 
+                                setEducations(educations.map(e => 
                                     e.id === edu.id ? { ...e, gpa: event.target.value } : e
                                 ));
                             }}
@@ -149,7 +142,7 @@ function CVEduction() {
                                     <button
                                         onClick={() => {
                                             const newCourses = edu.relevant_courses?.filter((_, i) => i !== idx) || [];
-                                            setEducation(education.map(e => 
+                                            setEducations(educations.map(e => 
                                                 e.id === edu.id ? { ...e, relevant_courses: newCourses } : e
                                             ));
                                         }}
@@ -166,7 +159,7 @@ function CVEduction() {
                             onKeyUp={(e) => {
                                 if (e.key === 'Enter' && e.currentTarget.value.trim()) {
                                     const newCourses = [...(edu.relevant_courses || []), e.currentTarget.value.trim()];
-                                    setEducation(education.map(e => 
+                                    setEducations(educations.map(e => 
                                         e.id === edu.id ? { ...e, relevant_courses: newCourses } : e
                                     ));
                                     e.currentTarget.value = '';

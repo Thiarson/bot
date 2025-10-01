@@ -41,7 +41,7 @@ export async function authenticate(
 
 export async function logout() {
     try {
-        await signOut({ redirectTo: '/' })
+        await signOut()
     } catch (e) {
         throw e;
     }

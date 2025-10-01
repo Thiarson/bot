@@ -1,4 +1,4 @@
-import CVBuilder from '@/components/boost/cv-builder';
+import CVBuilder from '@/components/cv/cv-builder';
 
 import type { Metadata } from 'next';
 

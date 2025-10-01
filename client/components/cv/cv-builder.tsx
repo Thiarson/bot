@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from 'react';
+import { useRef, useState } from 'react';
 import { useSession } from 'next-auth/react';
 import { 
     User, 
@@ -11,29 +11,52 @@ import {
     Eye,
     Save,
     FileText,
-    Share,
+    Upload,
     Check,
     Zap,
     ChevronDown,
 } from 'lucide-react';
+import { parseCV } from '@/lib/cv/actions';
 
-import CVTemplate from '@/components/boost/cv-template';
-import CVPersonalInfo from '@/components/boost/cv-personal-info';
-import CVExperience from '@/components/boost/cv-experience';
-import CVEduction from '@/components/boost/cv-eduction';
-import CVSkill from '@/components/boost/cv-skill';
-import CVProject from '@/components/boost/cv-project';
 import { DashboardSkeleton } from '@/components/boost/skeleton';
-
-import type { Experience } from '@/components/boost/cv-experience';
-import type { Skill } from '@/components/boost/cv-skill';
+import CVTemplate from '@/components/cv/cv-template';
+import CVPersonalInfo, { PersonalInfo } from '@/components/cv/cv-personal-info';
+import CVExperience, { Experience } from '@/components/cv/cv-experience';
+import CVEduction, { Education } from '@/components/cv/cv-eduction';
+import CVSkill, { Skill } from '@/components/cv/cv-skill';
+import CVProject, { Project } from '@/components/cv/cv-project';
+import LoadingModal from '../loading';
+import NotificationContainer, { useNotification } from '../notification';
 
 function CVBuilder() {
     const { status } = useSession();
     const [ activeSection, setActiveSection ] = useState<string>('templates');
-    const [ cvTitle, setCvTitle ] = useState<string>('My Professional CV');
+    const { notifications, showNotification, closeNotification } = useNotification();
+    const [ isLoading, setIsLoading ] = useState<boolean>(false)
     const [ lastSaved, setLastSaved ] = useState<Date | null>(null);
     const [ isSaving, setIsSaving ] = useState(false);
+    const fileInputRef = useRef<HTMLInputElement>(null);
+
+    const sidebarItems = [
+        { id: 'templates', label: 'Templates', icon: FileText },
+        { id: 'personal', label: 'Personal Info', icon: User },
+        { id: 'experience', label: 'Experience', icon: Briefcase },
+        { id: 'education', label: 'Education', icon: GraduationCap },
+        { id: 'skills', label: 'Skills', icon: Code },
+        { id: 'projects', label: 'Projects', icon: Zap },
+    ];
+
+    const [ cvTitle, setCvTitle ] = useState<string>('My Professional CV');
+
+    const [ personalInfo, setPersonalInfo ] = useState<PersonalInfo>({
+        fullName: 'Thiarson Antsa',
+        email: 'admin@boost.ai',
+        phone: '',
+        location: 'Antananarivo, Madagascar',
+        website: '',
+        linkedin: '',
+        summary: 'Passionate professional with expertise in modern technologies and a strong focus on creating innovative solutions that drive business growth and user satisfaction.'
+    });
 
     const [ experiences, setExperiences ] = useState<Experience[]>([
         {
@@ -53,7 +76,19 @@ function CVBuilder() {
         }
     ]);
 
-    const  [skills, setSkills ] = useState<Skill[]>([
+    const [ education, setEducation ] = useState<Education[]>([
+        {
+            id: '1',
+            degree: 'Bachelor of Computer Science',
+            institution: 'University of Antananarivo',
+            location: 'Antananarivo, MG',
+            graduationDate: '2022-06',
+            gpa: '3.8',
+            relevant_courses: ['Data Structures', 'Algorithms', 'Web Development', 'Database Systems']
+        }
+    ]);
+
+    const  [ skills, setSkills ] = useState<Skill[]>([
         { id: '1', name: 'JavaScript', level: 92, category: 'technical' },
         { id: '2', name: 'React', level: 89, category: 'technical' },
         { id: '3', name: 'TypeScript', level: 85, category: 'technical' },
@@ -63,18 +98,53 @@ function CVBuilder() {
         { id: '7', name: 'English', level: 90, category: 'language' }
     ]);
 
-    const sidebarItems = [
-        { id: 'templates', label: 'Templates', icon: FileText },
-        { id: 'personal', label: 'Personal Info', icon: User },
-        { id: 'experience', label: 'Experience', icon: Briefcase },
-        { id: 'education', label: 'Education', icon: GraduationCap },
-        { id: 'skills', label: 'Skills', icon: Code },
-        { id: 'projects', label: 'Projects', icon: Zap },
-    ];
+    const [ projects, setProjects ] = useState<Project[]>([
+        {
+            id: '1',
+            name: 'E-commerce Platform',
+            description: 'Full-stack e-commerce solution with modern payment integration and real-time inventory management.',
+            technologies: ['React', 'Node.js', 'MongoDB', 'Stripe'],
+            url: 'https://github.com/username/ecommerce',
+            duration: '3 months'
+        }
+    ]);
 
     if (status === "loading") {
         return <DashboardSkeleton />;
     }
+
+    const handleFileImport = async (event: React.ChangeEvent<HTMLInputElement>) => {
+        const file = event.target.files?.[0];
+        if (!file) return;
+
+        if (file.size > (5 * 1024 *  1024)) {
+            showNotification("File size exceeds 5MB.", "warning");
+            return;
+        }
+
+        if (
+            file.type !== 'application/pdf' &&
+            file.type !== 'application/vnd.openxmlformats-officedocument.wordprocessingml.document'
+        ) {
+            showNotification("Unsupported file format. Upload a PDF or DOCX file.", "warning");
+            return;
+        }
+
+        setIsLoading(true);
+
+        try {
+            const formData = new FormData();
+            formData.append('file', file);
+
+            const data = await parseCV(formData);
+
+            showNotification('CV imported successfully!');
+        } catch (e) {
+            showNotification("Failed to import CV. Please try again.", "error");
+        } finally {
+            setIsLoading(false);
+        }
+    };
 
     const handleSave = async () => {
         setIsSaving(true);
@@ -93,19 +163,19 @@ function CVBuilder() {
     const renderActiveSection = () => {
         switch (activeSection) {
         case 'templates':
-            return <CVTemplate title={cvTitle} onChange={setCvTitle} />;
+            return <CVTemplate title={cvTitle} setTitle={setCvTitle} />;
         case 'personal':
-            return <CVPersonalInfo/>;
+            return <CVPersonalInfo info={personalInfo} setInfo={setPersonalInfo}/>;
         case 'experience':
             return <CVExperience experiences={experiences} setExperiences={setExperiences} />;
         case 'education':
-            return <CVEduction/>;
+            return <CVEduction educations={education} setEducations={setEducation} />;
         case 'skills':
             return <CVSkill skills={skills} setSkills={setSkills} />;
         case 'projects':
-            return <CVProject/>;
+            return <CVProject projects={projects} setProjects={setProjects} />;
         default:
-            return <CVTemplate title={cvTitle} onChange={setCvTitle} />;
+            return <CVTemplate title={cvTitle} setTitle={setCvTitle} />;
         }
     };
 
@@ -178,15 +248,34 @@ function CVBuilder() {
                                 </button>
                             </div>
                         </div>
-                        <button className="flex items-center gap-2 bg-gray-800 hover:bg-gray-700 text-white px-4 py-2 rounded-lg transition-colors border border-gray-600">
-                            <Share className="w-4 h-4" />
-                            Share
-                        </button>
+                        <div className="flex gap-3">
+                            <button
+                                onClick={() => fileInputRef.current?.click()}
+                                className="flex items-center gap-2 bg-gray-800 hover:bg-gray-700 text-white px-4 py-2 rounded-lg transition-colors border border-gray-600"
+                            >
+                                <Upload className="w-4 h-4" />
+                                Import CV
+                            </button>
+                            <input
+                                ref={fileInputRef}
+                                type="file"
+                                accept=".pdf,.doc,.docx,.json"
+                                onChange={handleFileImport}
+                                className="hidden"
+                            />
+                        </div>
                     </div>
                 </div>
             </div>
 
             <div className="flex gap-6">
+                {/* Main Content */}
+                <div className="flex-1 min-w-0">
+                    <div className="bg-gray-900 border border-gray-700 rounded-lg p-8">
+                        {renderActiveSection()}
+                    </div>
+                </div>
+
                 {/* Progress Sidebar */}
                 <div className="w-80 flex-shrink-0">
                     <div className="bg-gray-900 border border-gray-700 rounded-lg p-6 mb-6">
@@ -244,14 +333,10 @@ function CVBuilder() {
                         </div>
                     </div>
                 </div>
-
-                {/* Main Content */}
-                <div className="flex-1 min-w-0">
-                    <div className="bg-gray-900 border border-gray-700 rounded-lg p-8">
-                        {renderActiveSection()}
-                    </div>
-                </div>
             </div>
+
+            <LoadingModal message='Importing CV data' isLoading={isLoading} />
+            <NotificationContainer notifications={notifications} onClose={closeNotification} />
 
             <style jsx>{`
                 .slider::-webkit-slider-thumb {

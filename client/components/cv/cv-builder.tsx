@@ -116,17 +116,25 @@ function CVBuilder() {
     const handleFileImport = async (event: React.ChangeEvent<HTMLInputElement>) => {
         const file = event.target.files?.[0];
         if (!file) return;
+        
+        const fileConfig = {
+            maxSize: { name: "5MB", value:  (5 * 1024 *  1024)},
+            supportedType: new Map<string, string>([
+                [ "pdf", "application/pdf" ],
+                // [ "docx", "application/vnd.openxmlformats-officedocument.wordprocessingml.document" ],
+            ]),
+        }
 
-        if (file.size > (5 * 1024 *  1024)) {
-            showNotification("File size exceeds 5MB.", "warning");
+        if (file.size > fileConfig.maxSize.value) {
+            showNotification(`File size exceeds ${fileConfig.maxSize.name}.`, "warning");
             return;
         }
 
         if (
-            file.type !== 'application/pdf' &&
-            file.type !== 'application/vnd.openxmlformats-officedocument.wordprocessingml.document'
+            !fileConfig.supportedType.values().toArray().includes(file.type)
         ) {
-            showNotification("Unsupported file format. Upload a PDF or DOCX file.", "warning");
+            const supported = fileConfig.supportedType.keys().toArray().map((type) => type.toUpperCase()).join(', ');
+            showNotification(`Unsupported file format. Upload ${supported} file.`, "warning");
             return;
         }
 
@@ -137,7 +145,15 @@ function CVBuilder() {
             formData.append('file', file);
 
             const data = await parseCV(formData);
-
+            if (data) {
+                setCvTitle(file.name);
+                setPersonalInfo(data.personalInfo);
+                setExperiences(data.experiences);
+                setEducation(data.education);
+                setSkills(data.skills);
+                setProjects(data.projects);
+            }
+            
             showNotification('CV imported successfully!');
         } catch (e) {
             showNotification("Failed to import CV. Please try again.", "error");

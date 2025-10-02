@@ -2,7 +2,7 @@ import axios from "axios";
 import FormData from "form-data";
 
 import type { Request, Response } from "express-serve-static-core";
-import type { ApiResponse } from "@bot/types";
+import type { ApiResponse, CVData } from "@bot/types";
 
 async function parseCV(req: Request, res: Response) {
     try {
@@ -23,26 +23,27 @@ async function parseCV(req: Request, res: Response) {
             }
         )
 
-        // const data = await axios.post(
-        //     `http://localhost:8000/agent/v1/cv/parse`,
-        //     formData,
-        //     {
-        //         headers: {
-        //             ...formData.getHeaders(),
-        //         }
-        //     }
-        // );
-        
-        // console.log(data)
+        const timeout = 5 * 1000 * 60; // 1 minute
 
-        const response: ApiResponse<null> = {
-            code: 200,
-            status: "success",
-            message: "CV parsed successfully",
-            data: null,
+        const { status: code, data } = await axios.post(
+            `http://localhost:8000/agent/v1/cv/extract`,
+            formData,
+            {
+                headers: {
+                    ...formData.getHeaders(),
+                },
+                timeout: timeout,
+            },
+        );
+
+        const response: ApiResponse<CVData> = {
+            code: code,
+            status: code === 200 ? "success" : "error",
+            message: code === 200 ? "CV parsed successfully" : "CV parsing failed. Please try again",
+            data: data,
         };
 
-        return res.status(200).json(response);
+        return res.status(code).json(response);
     } catch (e) {
         console.error(e)
         const response: ApiResponse<null> = {

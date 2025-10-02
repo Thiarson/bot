@@ -3,7 +3,6 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useSession } from "next-auth/react";
-import { useState } from "react";
 import { 
   FileText, 
   MessageSquare, 
@@ -17,11 +16,9 @@ import {
 import { SidebarSkeleton } from "./skeleton";
 
 function Sidebar() {
-    const pathname = usePathname();
-    const path = pathname.split('/')[2];
-    const activePath = path ? path : 'dashboard';
     const { status } = useSession();
-    const [ activeTab, setActiveTab ] = useState(activePath)
+    const pathname = usePathname();
+    const activeTab = pathname.split('/')[2] || 'dashboard';
 
     if (status === "loading") {
         return <SidebarSkeleton/>;
@@ -43,7 +40,6 @@ function Sidebar() {
                     <Link
                         href={href}
                         key={id}
-                        onClick={() => setActiveTab(id)}
                         className={`group relative w-full flex items-center justify-center md:justify-start space-x-4 md:space-x-3 px-4 md:px-2 py-3 rounded-lg text-left transition-all duration-200 ${
                         activeTab === id 
                             ? 'bg-gradient-to-r from-purple-600 to-blue-600 text-white' 

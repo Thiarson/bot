@@ -1,5 +1,6 @@
 import axios from "axios";
 import FormData from "form-data";
+import { agentUrl, internalApiKey } from "@config/api.config";
 
 import type { Request, Response } from "express-serve-static-core";
 import type { ApiResponse, CVData } from "@bot/types";
@@ -26,11 +27,12 @@ async function parseCV(req: Request, res: Response) {
         const timeout = 5 * 1000 * 60; // 1 minute
 
         const { status: code, data } = await axios.post(
-            `http://localhost:8000/agent/v1/cv/extract`,
+            `${agentUrl}/agent/v1/cv/extract`,
             formData,
             {
                 headers: {
                     ...formData.getHeaders(),
+                    "X-API-KEY": internalApiKey,
                 },
                 timeout: timeout,
             },

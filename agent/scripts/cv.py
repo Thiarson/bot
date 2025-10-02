@@ -1,6 +1,6 @@
 from typing import Optional, List
 from pydantic import BaseModel, Field
-from langchain_community.document_loaders import PyPDFLoader
+from langchain_community.document_loaders import PyPDFLoader, Docx2txtLoader
 from langchain_core.prompts import ChatPromptTemplate
 from langchain_core.output_parsers import JsonOutputParser
 
@@ -67,6 +67,8 @@ class CVData(BaseModel):
 def load_document(file_path: str, file_type: str) -> str:
     if file_type == "pdf":
         loader = PyPDFLoader(file_path)
+    elif file_type == "docx":
+        loader = Docx2txtLoader(file_path)
     else:
         raise ValueError(f"Unsupported file type: {file_type}")
     

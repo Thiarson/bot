@@ -33,6 +33,10 @@ app.add_middleware(
 async def extract_cv(file: UploadFile = File(...), api_key: str = Depends(verify_api_key)):
     if file.content_type == "application/pdf":
         file_extension = "pdf"
+    elif file.content_type == "application/vnd.openxmlformats-officedocument.wordprocessingml.document":
+        file_extension = "docx"
+    else:
+        raise HTTPException(status_code=400, detail="Unsupported file type.")
 
     # Save uploaded file temporarily
     with tempfile.NamedTemporaryFile(delete=False, suffix=f".{file_extension}") as tmp_file:

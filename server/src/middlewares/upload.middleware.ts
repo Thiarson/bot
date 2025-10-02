@@ -6,7 +6,7 @@ export const upload = multer({
     fileFilter: (req, file, cb) => {
         const allowedMimes = [
             "application/pdf",
-            // "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+            "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
         ];
 
         if (allowedMimes.includes(file.mimetype)) {

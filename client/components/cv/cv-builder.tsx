@@ -118,10 +118,10 @@ function CVBuilder() {
         if (!file) return;
         
         const fileConfig = {
-            maxSize: { name: "5MB", value:  (5 * 1024 *  1024)},
+            maxSize: { name: "5MB", value: (5 * 1024 * 1024) },
             supportedType: new Map<string, string>([
-                [ "pdf", "application/pdf" ],
-                // [ "docx", "application/vnd.openxmlformats-officedocument.wordprocessingml.document" ],
+                ["pdf", "application/pdf"],
+                ["docx", "application/vnd.openxmlformats-officedocument.wordprocessingml.document"],
             ]),
         }
 
@@ -130,9 +130,7 @@ function CVBuilder() {
             return;
         }
 
-        if (
-            !fileConfig.supportedType.values().toArray().includes(file.type)
-        ) {
+        if (!fileConfig.supportedType.values().toArray().includes(file.type)) {
             const supported = fileConfig.supportedType.keys().toArray().map((type) => type.toUpperCase()).join(', ');
             showNotification(`Unsupported file format. Upload ${supported} file.`, "warning");
             return;
@@ -277,6 +275,7 @@ function CVBuilder() {
                                 type="file"
                                 accept=".pdf,.doc,.docx,.json"
                                 onChange={handleFileImport}
+                                onClick={(e) => e.currentTarget.value = ''}
                                 className="hidden"
                             />
                         </div>

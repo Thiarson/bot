@@ -14,11 +14,11 @@ interface CVTemplate {
 type PropsType = {
     title: string
     setTitle: Dispatch<SetStateAction<string>>
+    template: string
+    setTemplate: Dispatch<SetStateAction<string>>
 }
 
-function CVTemplate({ title, setTitle }: PropsType) {
-    const [ selectedTemplate, setSelectedTemplate ] = useState<string>('modern');
-
+function CVTemplate({ title, setTitle, template: selectedTemplate, setTemplate }: PropsType) {
     const templates: CVTemplate[] = [
         { id: 'modern', name: 'Modern Professional', thumbnail: '🎨', style: 'modern' },
         { id: 'classic', name: 'Classic Business', thumbnail: '📄', style: 'classic' },
@@ -39,7 +39,7 @@ function CVTemplate({ title, setTitle }: PropsType) {
                 {templates.map((template) => (
                 <div
                     key={template.id}
-                    onClick={() => setSelectedTemplate(template.id)}
+                    onClick={() => setTemplate(template.id)}
                     className={`relative cursor-pointer border-2 rounded-lg p-6 transition-all hover:scale-105 ${
                     selectedTemplate === template.id
                         ? 'border-purple-500 bg-purple-500/10'

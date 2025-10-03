@@ -16,7 +16,7 @@ import {
     Zap,
     ChevronDown,
 } from 'lucide-react';
-import { extractCV, saveCV } from '@/lib/cv/actions';
+import { exportCV, extractCV, saveCV } from '@/lib/cv/actions';
 
 import { DashboardSkeleton } from '@/components/boost/skeleton';
 import CVTemplate from '@/components/cv/cv-template';
@@ -110,6 +110,8 @@ function CVBuilder({ cvData }: { cvData: CVWithMetadata | null }) {
 
     const [ projects, setProjects ] = useState<Project[]>(cv.projects);
 
+    const [ template, setTemplate ] = useState<string>('modern');
+
     if (status === "loading") {
         return <DashboardSkeleton />;
     }
@@ -188,15 +190,25 @@ function CVBuilder({ cvData }: { cvData: CVWithMetadata | null }) {
         }
     };
 
-    const handleExport = (format: 'pdf' | 'word' | 'json') => {
-        console.log(`Exporting CV as ${format}`);
-        // Export logic here
+    const handleExport = async (format: 'pdf' | 'word' | 'json') => {
+        setIsLoading(true);
+
+        try {
+            await handleSave();
+            await exportCV(template, format);
+            
+            showNotification('CV exported successfully!');
+        } catch (e: any) {
+            showNotification(e.message, "error");
+        } finally {
+            setIsLoading(false);
+        }
     };
 
     const renderActiveSection = () => {
         switch (activeSection) {
         case 'templates':
-            return <CVTemplate title={cvTitle} setTitle={setCvTitle} />;
+            return <CVTemplate title={cvTitle} setTitle={setCvTitle} template={template} setTemplate={setTemplate} />;
         case 'personal':
             return <CVPersonalInfo info={personalInfo} setInfo={setPersonalInfo}/>;
         case 'experience':
@@ -208,7 +220,7 @@ function CVBuilder({ cvData }: { cvData: CVWithMetadata | null }) {
         case 'projects':
             return <CVProject projects={projects} setProjects={setProjects} />;
         default:
-            return <CVTemplate title={cvTitle} setTitle={setCvTitle} />;
+            return <CVTemplate title={cvTitle} setTitle={setCvTitle} template={template} setTemplate={setTemplate} />;
         }
     };
 

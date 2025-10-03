@@ -1,68 +1,9 @@
-from typing import Optional, List
-from pydantic import BaseModel, Field
 from langchain_community.document_loaders import PyPDFLoader, Docx2txtLoader
 from langchain_core.prompts import ChatPromptTemplate
 from langchain_core.output_parsers import JsonOutputParser
 
 from config.ai_model import llm
-
-
-# Pydantic models for structured extraction
-class PersonalInfo(BaseModel):
-    fullName: str = Field(description="Full name of the candidate")
-    email: str = Field(description="Email address")
-    phone: str = Field(description="Phone number")
-    location: str = ""
-    website: str = ""
-    linkedin: str = ""
-    summary: str = Field(description="Professional summary or objective")
-
-class Experience(BaseModel):
-    id: str
-    position: str = Field(description="Job title")
-    company: str = Field(description="Company name")
-    duration: Optional[str] = Field(description="Employment duration")
-    responsibilities: List[str] = Field(description="Key responsibilities and achievements")
-    location: str = ""
-    startDate: str = Field(default="", description="Start date in YYYY-MM format (e.g., 2023-04)")
-    endDate: str = Field(default="", description="End date in YYYY-MM format (e.g., 2023-10), or empty if current")
-    current: bool = False
-    description: str = ""
-    achievements: list[str] = []
-
-class Education(BaseModel):
-    id: str
-    degree: str = Field(description="Degree or certification name")
-    institution: str = Field(description="Educational institution name")
-    year: Optional[str] = Field(description="Graduation year or period")
-    field: Optional[str] = Field(description="Field of study")
-    location: str = ""
-    graduationDate: str = Field(default="", description="Graduation date in YYYY-MM format (e.g., 2024-06)")
-    gpa: str = ""
-    relevant_courses: list[str] = []
-
-class Skill(BaseModel):
-    id: str
-    name: str
-    level: int
-    category: str
-
-class Project(BaseModel):
-    id: str
-    name: str = ""
-    description: str = ""
-    technologies: list[str] = []
-    url: str = ""
-    duration: str = ""
-
-class CVData(BaseModel):
-    personalInfo: PersonalInfo
-    experiences: List[Experience] = Field(description="Work experience")
-    education: List[Education] = Field(description="Educational background")
-    skills: List[Skill] = Field(description="List of skills")
-    projects: List[Project] = []
-    languages: Optional[List[str]] = Field(description="Languages spoken")
-
+from utils.cv_type import CVData
 
 def load_document(file_path: str, file_type: str) -> str:
     if file_type == "pdf":

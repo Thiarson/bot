@@ -1,11 +1,13 @@
 import tempfile
 from fastapi import FastAPI, UploadFile, File, HTTPException, Depends
 from fastapi.security import APIKeyHeader
-from fastapi.responses import JSONResponse
+from fastapi.responses import JSONResponse, FileResponse
 from fastapi.middleware.cors import CORSMiddleware
 
 from config.api_config import api_url, internal_api_key
 from scripts.cv import load_document, extraction
+from utils.cv_template import CVGenerator
+from utils.cv_type import CVExportRequest
 
 app = FastAPI()
 
@@ -51,4 +53,31 @@ async def extract_cv(file: UploadFile = File(...), api_key: str = Depends(verify
 
         return JSONResponse(content=cv_data)
     except Exception as e:
-        raise HTTPException(status_code=500, detail=f"Error processin CV file: {str(e)}")
+        raise HTTPException(status_code=500, detail=f"Error processing CV file: {str(e)}")
+
+@app.post("/agent/v1/cv/export")
+async def export_cv(request: CVExportRequest, api_key: str = Depends(verify_api_key)):
+    try:
+        if request.template not in [ "modern", "classic" ]:
+            raise HTTPException(status_code=400, detail="Unsupported template type.")
+
+        file = f"{request.filename}.pdf"
+        filepath = f"/tmp/{file}"
+
+        CVGenerator.generate(request.template, request.cv_data, filepath)
+
+        return JSONResponse(
+            content={
+                "status": "success",
+                "message": "CV exported successfully"
+            },
+            status_code=200
+        )
+        
+        # return FileResponse(
+        #     filepath, 
+        #     media_type='application/pdf',
+        #     filename=file,
+        # )
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Error exporting CV to PDF: {str(e)}")

@@ -25,4 +25,10 @@ cvRouter.post(
     cvController.saveCV,
 );
 
+cvRouter.post(
+    "/export",
+    validateToken,
+    cvController.exportCV,
+);
+
 export default cvRouter;

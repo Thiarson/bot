@@ -52,3 +52,18 @@ export async function saveCV(cv: CVWithTitle) {
         throw Error("Failed to save CV. Please try again");
     }
 }
+
+export async function exportCV(template: string, format: string) {
+    try {
+        const http = await createHttpRequest();
+        const { data: response } = await http.post<ApiResponse<null>>(
+            "/cv/export",
+            { template, format },
+        );
+
+        if (response.status === "error") throw new Error(response.message);
+    } catch (e: any) {
+        if (e.code === 'ECONNREFUSED') throw Error("Check your internet connection and try again");
+        throw Error("Failed to save CV. Please try again");
+    }
+}

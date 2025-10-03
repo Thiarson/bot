@@ -1,9 +1,7 @@
 import axios from "axios";
-import mongoose from "mongoose";
 import FormData from "form-data";
-import { v4 as uuidv4 } from "uuid";
 import { CvModel } from "model/cv.model";
-import { agentUrl, internalApiKey } from "@config/api.config";
+import { agentUrl, internalApiKey, requestTimeout } from "@config/api.config";
 
 import type { Request, Response } from "express-serve-static-core";
 import type {
@@ -33,8 +31,6 @@ async function parseCV(req: Request, res: Response) {
             }
         )
 
-        const timeout = 5 * 1000 * 60; // 1 minute
-
         const { status: code, data } = await axios.post(
             `${agentUrl}/agent/v1/cv/extract`,
             formData,
@@ -43,7 +39,7 @@ async function parseCV(req: Request, res: Response) {
                     ...formData.getHeaders(),
                     "X-API-KEY": internalApiKey,
                 },
-                timeout: timeout,
+                timeout: requestTimeout,
             },
         );
 
@@ -71,10 +67,14 @@ async function parseCV(req: Request, res: Response) {
 async function saved(req: Request, res: Response) {
     try {
         const userId = parseInt(req.user?.id);
-        const cv = await getSavedCv(userId);
         let response: ApiResponse<CVWithMetadata| null>;
 
-        if (cv === null) {
+        const [pgResult, mongoResult] = await Promise.all([
+            getSavedCv(userId),
+            CvModel.findOne({ userId: userId }),
+        ]);
+
+        if (!pgResult || !mongoResult) {
             response = {
                 code: 404,
                 status: "error",
@@ -85,21 +85,18 @@ async function saved(req: Request, res: Response) {
             return res.status(404).json(response);
         }
 
-        const result = await CvModel.findOne({ userId: userId });
-        if (!result) throw Error("Saved CV not found");
-
         response = {
             code: 200,
             status: "success",
             message: "Success getting saved CV",
             data: {
-                personalInfo: result.personalInfo,
-                experiences: result.experiences,
-                education: result.education,
-                skills: result.skills,
-                projects: result.projects,
-                title: cv.title,
-                lastSaved: cv.updated_at,
+                personalInfo: mongoResult.personalInfo,
+                experiences: mongoResult.experiences,
+                education: mongoResult.education,
+                skills: mongoResult.skills,
+                projects: mongoResult.projects,
+                title: pgResult.title,
+                lastSaved: pgResult.updated_at,
             },
         };
 
@@ -164,8 +161,89 @@ async function saveCV(req: Request, res: Response) {
     }
 }
 
+async function exportCV(req: Request, res: Response) {
+    try {
+        const userId = parseInt(req.user?.id);
+        const { template, format } = req.body;
+        let response: ApiResponse<null>;
+
+        if (!template || !format) {
+            response = {
+                code: 400,
+                status: "error",
+                message: "No Template or Format data",
+                data: null,
+            };
+
+            return res.status(400).json(response);
+        }
+        
+        const [pgResult, mongoResult] = await Promise.all([
+            getSavedCv(userId),
+            CvModel.findOne({ userId: userId }),
+        ]);
+
+        if (!pgResult || !mongoResult) {
+            response = {
+                code: 404,
+                status: "error",
+                message: "Saved CV not found",
+                data: null,
+            };
+
+            return res.status(404).json(response);
+        }
+
+        const cvData: CVData = {
+            personalInfo: mongoResult.personalInfo,
+            experiences: mongoResult.experiences,
+            education: mongoResult.education,
+            skills: mongoResult.skills,
+            projects: mongoResult.projects,
+        }
+
+        const { status: code, data } = await axios.post(
+            `${agentUrl}/agent/v1/cv/export`,
+            {
+                cv_data: cvData,
+                template,
+                filename: pgResult.title,
+                format,
+            },
+            {
+                headers: {
+                    'Content-Type': 'application/json',
+                    "X-API-KEY": internalApiKey,
+                },
+                // responseType: "arraybuffer",
+                timeout: requestTimeout,
+            },
+        );
+
+        response = {
+            code: 200,
+            status: "success",
+            message: "CV exported successfully",
+            data: null,
+        };
+
+        return res.status(response.code).json(response);
+    } catch (e: any) {
+        console.error(e)
+        const response: ApiResponse<null> = {
+            code: 500,
+            status: "error",
+            message: "Failed exporting CV. Please try again",
+            data: null,
+        };
+        
+        return res.status(500).json(response);
+    }
+}
+
 export default {
     parseCV,
     saved,
-    saveCV
+    saveCV,
+    exportCV,
 }

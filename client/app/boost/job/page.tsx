@@ -6,7 +6,7 @@ export const metadata: Metadata = {
   title: 'Boost Job',
 };
 
-export default function Home() {
+export default function Page() {
   return (
     <DashboardSkeleton/>
   );

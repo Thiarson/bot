@@ -4,7 +4,7 @@ import AnimatedBackground from '@/components/background';
 import AuthNavbar from '@/components/auth/navbar';
 import LoginForm from '@/components/auth/login-form';
 
-export default function Home() {
+export default function Page() {
   return (
     <div className="min-h-screen bg-black text-white relative overflow-hidden">
       {/* Animated background elements */}

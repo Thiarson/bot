@@ -1,4 +1,4 @@
-import pg from "../database/pg";
+import pg from "database/pg";
 
 import type { User } from "@bot/types";
 

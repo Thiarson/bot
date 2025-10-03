@@ -1,6 +1,6 @@
 "use client";
 
-import { useRef, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { useSession } from 'next-auth/react';
 import { 
     User, 
@@ -16,24 +16,70 @@ import {
     Zap,
     ChevronDown,
 } from 'lucide-react';
-import { parseCV } from '@/lib/cv/actions';
+import { extractCV, saveCV } from '@/lib/cv/actions';
 
 import { DashboardSkeleton } from '@/components/boost/skeleton';
 import CVTemplate from '@/components/cv/cv-template';
-import CVPersonalInfo, { PersonalInfo } from '@/components/cv/cv-personal-info';
-import CVExperience, { Experience } from '@/components/cv/cv-experience';
-import CVEduction, { Education } from '@/components/cv/cv-eduction';
-import CVSkill, { Skill } from '@/components/cv/cv-skill';
-import CVProject, { Project } from '@/components/cv/cv-project';
-import LoadingModal from '../loading';
-import NotificationContainer, { useNotification } from '../notification';
+import CVPersonalInfo from '@/components/cv/cv-personal-info';
+import CVExperience from '@/components/cv/cv-experience';
+import CVEduction from '@/components/cv/cv-eduction';
+import CVSkill from '@/components/cv/cv-skill';
+import CVProject from '@/components/cv/cv-project';
+import LoadingModal from '@/components/loading';
+import NotificationContainer, { useNotification } from '@/components/notification';
 
-function CVBuilder() {
+import type { CVWithMetadata, CVWithTitle } from '@bot/types';
+import type { PersonalInfo } from '@/components/cv/cv-personal-info';
+import type { Experience } from '@/components/cv/cv-experience';
+import type { Education } from '@/components/cv/cv-eduction';
+import type { Skill } from '@/components/cv/cv-skill';
+import type { Project } from '@/components/cv/cv-project';
+
+function getEmptyCV() {
+    const personalInfo: PersonalInfo = {
+        fullName: "",
+        email: "",
+        phone: "",
+        location: "",
+        summary: "",
+    };
+    const experiences: Experience[] = [];
+    const education: Education[] = [];
+    const skills: Skill[] = [];
+    const projects: Project[] = [];
+
+    return {
+        title: "My Professional CV",
+        personalInfo,
+        experiences,
+        education,
+        skills,
+        projects,
+    };
+}
+
+function isEmptyCV(cv: CVWithTitle) {
+    if (!cv.title) return true;
+
+    return (
+        !cv.personalInfo.fullName &&
+        !cv.personalInfo.email &&
+        !cv.personalInfo.phone &&
+        !cv.personalInfo.location &&
+        !cv.personalInfo.summary &&
+        cv.experiences.length === 0 &&
+        cv.education.length === 0 &&
+        cv.skills.length === 0 &&
+        cv.projects.length === 0
+    );
+}
+
+function CVBuilder({ cvData }: { cvData: CVWithMetadata | null }) {
     const { status } = useSession();
     const [ activeSection, setActiveSection ] = useState<string>('templates');
     const { notifications, showNotification, closeNotification } = useNotification();
     const [ isLoading, setIsLoading ] = useState<boolean>(false)
-    const [ lastSaved, setLastSaved ] = useState<Date | null>(null);
+    const [ lastSaved, setLastSaved ] = useState<Date | null>(cvData?.lastSaved ??  null);
     const [ isSaving, setIsSaving ] = useState(false);
     const fileInputRef = useRef<HTMLInputElement>(null);
 
@@ -45,69 +91,24 @@ function CVBuilder() {
         { id: 'skills', label: 'Skills', icon: Code },
         { id: 'projects', label: 'Projects', icon: Zap },
     ];
+    
+    useEffect(() => {
+        if (!cvData) showNotification("No saved CV found", "info");    
+    }, []);
 
-    const [ cvTitle, setCvTitle ] = useState<string>('My Professional CV');
+    const cv = cvData ?? getEmptyCV();
 
-    const [ personalInfo, setPersonalInfo ] = useState<PersonalInfo>({
-        fullName: 'Thiarson Antsa',
-        email: 'admin@boost.ai',
-        phone: '',
-        location: 'Antananarivo, Madagascar',
-        website: '',
-        linkedin: '',
-        summary: 'Passionate professional with expertise in modern technologies and a strong focus on creating innovative solutions that drive business growth and user satisfaction.'
-    });
+    const [ cvTitle, setCvTitle ] = useState<string>(cv.title);
 
-    const [ experiences, setExperiences ] = useState<Experience[]>([
-        {
-            id: '1',
-            position: 'Senior Frontend Developer',
-            company: 'TechCorp',
-            location: 'Remote',
-            startDate: '2023-01',
-            endDate: '',
-            description: 'Led frontend development team, implemented modern React applications with TypeScript, and improved user experience across multiple products.',
-            current: true,
-            achievements: [
-                'Increased user engagement by 40% through UI/UX improvements',
-                'Reduced page load time by 60% through code optimization',
-                'Led a team of 5 developers on critical projects'
-            ]
-        }
-    ]);
+    const [ personalInfo, setPersonalInfo ] = useState<PersonalInfo>(cv.personalInfo);
 
-    const [ education, setEducation ] = useState<Education[]>([
-        {
-            id: '1',
-            degree: 'Bachelor of Computer Science',
-            institution: 'University of Antananarivo',
-            location: 'Antananarivo, MG',
-            graduationDate: '2022-06',
-            gpa: '3.8',
-            relevant_courses: ['Data Structures', 'Algorithms', 'Web Development', 'Database Systems']
-        }
-    ]);
+    const [ experiences, setExperiences ] = useState<Experience[]>(cv.experiences);
 
-    const  [ skills, setSkills ] = useState<Skill[]>([
-        { id: '1', name: 'JavaScript', level: 92, category: 'technical' },
-        { id: '2', name: 'React', level: 89, category: 'technical' },
-        { id: '3', name: 'TypeScript', level: 85, category: 'technical' },
-        { id: '4', name: 'Node.js', level: 78, category: 'technical' },
-        { id: '5', name: 'Leadership', level: 85, category: 'soft' },
-        { id: '6', name: 'French', level: 95, category: 'language' },
-        { id: '7', name: 'English', level: 90, category: 'language' }
-    ]);
+    const [ education, setEducation ] = useState<Education[]>(cv.education);
 
-    const [ projects, setProjects ] = useState<Project[]>([
-        {
-            id: '1',
-            name: 'E-commerce Platform',
-            description: 'Full-stack e-commerce solution with modern payment integration and real-time inventory management.',
-            technologies: ['React', 'Node.js', 'MongoDB', 'Stripe'],
-            url: 'https://github.com/username/ecommerce',
-            duration: '3 months'
-        }
-    ]);
+    const  [ skills, setSkills ] = useState<Skill[]>(cv.skills);
+
+    const [ projects, setProjects ] = useState<Project[]>(cv.projects);
 
     if (status === "loading") {
         return <DashboardSkeleton />;
@@ -142,31 +143,49 @@ function CVBuilder() {
             const formData = new FormData();
             formData.append('file', file);
 
-            const data = await parseCV(formData);
-            if (data) {
-                setCvTitle(file.name);
-                setPersonalInfo(data.personalInfo);
-                setExperiences(data.experiences);
-                setEducation(data.education);
-                setSkills(data.skills);
-                setProjects(data.projects);
-            }
+            const cv = await extractCV(formData);
+
+            setCvTitle(file.name);
+            setPersonalInfo(cv.personalInfo);
+            setExperiences(cv.experiences);
+            setEducation(cv.education);
+            setSkills(cv.skills);
+            setProjects(cv.projects);
             
             showNotification('CV imported successfully!');
-        } catch (e) {
-            showNotification("Failed to import CV. Please try again.", "error");
+        } catch (e: any) {
+            showNotification(e.message, "error");
         } finally {
             setIsLoading(false);
         }
     };
 
     const handleSave = async () => {
+        const cv: CVWithTitle = {
+            title: cvTitle,
+            personalInfo,
+            experiences,
+            education,
+            skills,
+            projects,
+        };
+
+        if (isEmptyCV(cv)) {
+            showNotification("CV is empty. Update it before saving", "warning");
+            return;
+        }
+
         setIsSaving(true);
-        // Simulate API call
-        setTimeout(() => {
-        setLastSaved(new Date());
-        setIsSaving(false);
-        }, 1000);
+
+        try {
+            const lastSave = await saveCV(cv);
+            setLastSaved(lastSave);
+            showNotification("CV saved successfully");
+        } catch (e: any) {
+            showNotification(e.message, "error");
+        } finally {
+            setIsSaving(false);
+        }
     };
 
     const handleExport = (format: 'pdf' | 'word' | 'json') => {
@@ -205,7 +224,7 @@ function CVBuilder() {
                         <div>
                             <h1 className="text-xl font-semibold text-white">{cvTitle}</h1>
                             <p className="text-sm text-gray-400">
-                                {lastSaved ? `Last saved ${lastSaved.toLocaleTimeString()}` : 'Unsaved changes'}
+                                {lastSaved ? `Last saved ${new Date(lastSaved).toLocaleTimeString()}` : 'Unsaved changes'}
                             </p>
                         </div>
                     </div>

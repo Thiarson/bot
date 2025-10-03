@@ -1,16 +1,54 @@
 "use server";
 
-import { extractCV } from "@/repositories/cv.model";
+import createHttpRequest from "@/utils/http-request";
+import type {
+    ApiResponse,
+    CVData,
+    CVWithMetadata,
+    CVWithTitle,
+} from "@bot/types";
 
-export async function parseCV(formData: FormData) {
+export async function extractCV(formData: FormData) {
     try {
-        const cv = await extractCV(formData);
-        return cv;
-    } catch (e) {
-        if (e instanceof Error) {
-            if (e.message.startsWith("NEXT_REDIRECT")) throw e;
-        }
+        const http = await createHttpRequest();
+        const {  data: response } = await http.post<ApiResponse<CVData>>("/cv/extract", formData);
 
-        throw e;
+        if (response.status === "error") throw new Error(response.message);
+
+        return response.data;
+    } catch (e: any) {
+        if (e.code === 'ECONNREFUSED') throw Error("Check your internet connection and try again");
+        throw Error("Failed to import CV. Please try again");
+    }
+    
+}
+
+export async function getSavedCv() {
+    try {
+        const http = await createHttpRequest();
+
+        const { data: response } = await http.get<ApiResponse<CVWithMetadata>>(
+            '/cv/saved',
+        )
+
+        if (response.status === "error") throw new Error(response.message);
+
+        return response.data;
+    } catch (e) {
+        return null
+    }
+}
+
+export async function saveCV(cv: CVWithTitle) {
+    try {
+        const http = await createHttpRequest();
+        const {  data: response } = await http.post<ApiResponse<Date>>("/cv/save", cv);
+
+        if (response.status === "error") throw new Error(response.message);
+
+        return response.data;
+    } catch (e: any) {
+        if (e.code === 'ECONNREFUSED') throw Error("Check your internet connection and try again");
+        throw Error("Failed to save CV. Please try again");
     }
 }

@@ -1,4 +1,3 @@
-
 export interface PersonalInfo {
   fullName: string;
   email: string;
@@ -54,3 +53,12 @@ export interface CVData {
     skills: Skill[];
     projects: Project[]
 }
+
+export type CVWithTitle = CVData & { title: string };
+
+export type CVWithSaveDate = CVData & { lastSaved: Date };
+
+export type CVWithMetadata = CVData & {
+  title: string
+  lastSaved: Date
+};

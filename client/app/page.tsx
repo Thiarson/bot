@@ -4,7 +4,7 @@ import AnimatedBackground from "@/components/background";
 import LandingNavbar from "@/components/landing/navbar";
 import LandingCard from "@/components/landing/landing-card";
 
-export default function Home() {
+export default function Page() {
   return (
     <div className="min-h-screen bg-black text-white overflow-hidden">
             {/* Animated background elements */}

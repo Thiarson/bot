@@ -36,10 +36,10 @@ function Dashboard() {
             {/* Quick Stats */}
             <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
                 {[
-                { label: 'Job Matches', value: '127', change: '+12', icon: Target },
-                { label: 'Profile Views', value: '89', change: '+24', icon: TrendingUp },
-                { label: 'Interviews', value: '3', change: '+1', icon: MessageSquare },
-                { label: 'Skills Progress', value: '78%', change: '+5%', icon: Award }
+                    { label: 'Job Matches', value: '127', change: '+12', icon: Target },
+                    { label: 'Profile Views', value: '89', change: '+24', icon: TrendingUp },
+                    { label: 'Interviews', value: '3', change: '+1', icon: MessageSquare },
+                    { label: 'Skills Progress', value: '78%', change: '+5%', icon: Award },
                 ].map(({ label, value, change, icon: Icon }) => (
                     <div key={label} className="bg-gray-900 rounded-xl p-6 border border-gray-800">
                         <div className="flex items-center justify-between mb-2">

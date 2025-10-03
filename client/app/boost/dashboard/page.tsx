@@ -6,7 +6,7 @@ export const metadata: Metadata = {
   title: 'Boost Dashboard',
 };
 
-export default function Home() {
+export default function Page() {
   return (
     <Dashboard/>
   );

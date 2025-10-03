@@ -3,7 +3,7 @@ import Credentials from "next-auth/providers/credentials";
 import bcrypt from "bcrypt";
 import { z } from "zod";
 import { authConfig } from "@/auth.config";
-import { createUser, getUser } from "@/repositories/user.model";
+import { createUser, getUser } from "@/repo/user.repo";
 
 import "next-auth"
 import "next-auth/jwt"

@@ -1,5 +1,6 @@
 import axios from "axios";
 import FormData from "form-data";
+import { pipeline } from "node:stream/promises";
 import { CvModel } from "model/cv.model";
 import { agentUrl, internalApiKey, requestTimeout } from "@config/api.config";
 
@@ -215,13 +216,14 @@ async function exportCV(req: Request, res: Response) {
                     'Content-Type': 'application/json',
                     "X-API-KEY": internalApiKey,
                 },
-                responseType: "arraybuffer",
+                responseType: "stream",
                 timeout: requestTimeout,
             },
         );
 
         res.setHeader("Content-Type", "application/pdf");
-        return res.send(Buffer.from(data));
+        
+        return await pipeline(data, res);
     } catch (e: any) {
         console.error(e)
         const response: ApiResponse<null> = {

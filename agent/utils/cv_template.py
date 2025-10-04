@@ -7,7 +7,7 @@ from reportlab.platypus import Paragraph
 from reportlab.lib.styles import ParagraphStyle
 from reportlab.lib.enums import TA_LEFT, TA_JUSTIFY
 
-from utils.cv_type import CVData, PersonalInfo, Education, Experience, Project, Skill
+from utils.cv_type import CVData
 
 class CVTemplate(ABC):
     """Abstract base class for CV templates"""
@@ -197,11 +197,41 @@ class ModernProfessionalTemplate(CVTemplate):
         
         info = self.cv_data.personalInfo
         
-        # Name
+        # Name - with intelligent sizing
         self.c.setFillColor(self.TEXT_COLOR)
-        self.c.setFont("Helvetica-Bold", 32)
-        self.c.drawString(x, y, info.fullName.upper())
-        y -= 0.45 * inch
+        
+        # Calculate appropriate font size based on name length
+        name_upper = info.fullName.upper()
+        if len(name_upper) > 25:
+            name_font_size = 24
+        elif len(name_upper) > 20:
+            name_font_size = 28
+        else:
+            name_font_size = 32
+        
+        self.c.setFont("Helvetica-Bold", name_font_size)
+        
+        # Check if name fits, if not wrap it
+        name_width = self.c.stringWidth(name_upper, "Helvetica-Bold", name_font_size)
+        if name_width > width:
+            # Split name and draw on two lines
+            name_parts = name_upper.split()
+            if len(name_parts) > 1:
+                mid = len(name_parts) // 2
+                line1 = " ".join(name_parts[:mid])
+                line2 = " ".join(name_parts[mid:])
+                self.c.drawString(x, y, line1)
+                y -= name_font_size * 1.2 / 72 * inch
+                self.c.drawString(x, y, line2)
+                y -= 0.35 * inch
+            else:
+                # Single long word - use smaller font
+                self.c.setFont("Helvetica-Bold", 22)
+                self.c.drawString(x, y, name_upper)
+                y -= 0.4 * inch
+        else:
+            self.c.drawString(x, y, name_upper)
+            y -= 0.45 * inch
         
         # Professional Summary
         if info.summary:
@@ -387,11 +417,48 @@ class ClassicBusinessTemplate(CVTemplate):
         
         info = self.cv_data.personalInfo
         
-        # Header - Name (centered)
+        # Header - Name (centered) with intelligent sizing
         self.c.setFillColor(self.HEADER_COLOR)
-        self.c.setFont("Helvetica-Bold", 28)
-        self.c.drawCentredString(self.width/2, y, info.fullName.upper())
-        y -= 0.35 * inch
+        
+        name_upper = info.fullName.upper()
+        
+        # Calculate appropriate font size based on name length
+        if len(name_upper) > 30:
+            name_font_size = 22
+        elif len(name_upper) > 25:
+            name_font_size = 24
+        elif len(name_upper) > 20:
+            name_font_size = 26
+        else:
+            name_font_size = 28
+        
+        self.c.setFont("Helvetica-Bold", name_font_size)
+        
+        # Check if name fits within margins
+        name_width = self.c.stringWidth(name_upper, "Helvetica-Bold", name_font_size)
+        max_width = width * 0.95  # Use 95% of available width for safety
+        
+        if name_width > max_width:
+            # Split name into multiple lines if too long
+            name_parts = name_upper.split()
+            if len(name_parts) > 2:
+                # Split into 2 lines
+                mid = len(name_parts) // 2
+                line1 = " ".join(name_parts[:mid])
+                line2 = " ".join(name_parts[mid:])
+                
+                self.c.drawCentredString(self.width/2, y, line1)
+                y -= (name_font_size + 4) / 72 * inch
+                self.c.drawCentredString(self.width/2, y, line2)
+                y -= 0.3 * inch
+            else:
+                # Just use smaller font for single/two word names
+                self.c.setFont("Helvetica-Bold", 20)
+                self.c.drawCentredString(self.width/2, y, name_upper)
+                y -= 0.35 * inch
+        else:
+            self.c.drawCentredString(self.width/2, y, name_upper)
+            y -= 0.35 * inch
         
         # Contact information - centered on multiple lines if needed
         self.c.setFillColor(self.TEXT_COLOR)

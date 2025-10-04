@@ -1,8 +1,5 @@
-import { Dispatch, SetStateAction, useState } from 'react';
-import { 
-  Check,
-  Star,
-} from 'lucide-react';
+import { Dispatch, SetStateAction } from 'react';
+import { Check } from 'lucide-react';
 
 interface CVTemplate {
     id: string;
@@ -64,9 +61,8 @@ function CVTemplate({ title, setTitle, template: selectedTemplate, setTemplate }
 
             <div className="bg-gray-900 border border-gray-700 rounded-lg p-6">
                 <div className="flex items-start justify-between">
-                    <div>
-                        <h3 className="text-lg font-medium text-white mb-2">CV Title</h3>
-                        <p className="text-sm text-gray-400 mb-4">Give your CV a memorable name</p>
+                    <div className="flex-1">
+                        <h3 className="text-lg font-medium text-white mb-4">CV Title</h3>
                         <input
                             type="text"
                             value={title}
@@ -74,10 +70,6 @@ function CVTemplate({ title, setTitle, template: selectedTemplate, setTemplate }
                             className="w-full max-w-md bg-gray-800 border border-gray-600 rounded-lg px-4 py-3 text-white focus:outline-none focus:ring-2 focus:ring-purple-500"
                             placeholder="My Professional CV"
                         />
-                    </div>
-                    <div className="flex items-center gap-3">
-                        <Star className="w-5 h-5 text-yellow-500" />
-                        <span className="text-sm text-gray-400">Premium Template</span>
                     </div>
                 </div>
             </div>

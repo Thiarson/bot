@@ -66,18 +66,10 @@ async def export_cv(request: CVExportRequest, api_key: str = Depends(verify_api_
 
         CVGenerator.generate(request.template, request.cv_data, filepath)
 
-        return JSONResponse(
-            content={
-                "status": "success",
-                "message": "CV exported successfully"
-            },
-            status_code=200
+        return FileResponse(
+            filepath, 
+            media_type='application/pdf',
+            filename=file,
         )
-        
-        # return FileResponse(
-        #     filepath, 
-        #     media_type='application/pdf',
-        #     filename=file,
-        # )
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Error exporting CV to PDF: {str(e)}")

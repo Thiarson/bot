@@ -11,6 +11,7 @@ import {
     Eye,
     Save,
     FileText,
+    Globe,
     Upload,
     Check,
     Zap,
@@ -190,12 +191,36 @@ function CVBuilder({ cvData }: { cvData: CVWithMetadata | null }) {
         }
     };
 
-    const handleExport = async (format: 'pdf' | 'word' | 'json') => {
+    const handleExport = async (format: 'pdf' | 'html' | 'json') => {
         setIsLoading(true);
 
         try {
             await handleSave();
-            await exportCV(template, format);
+            const { data: base64, contentType } = await exportCV(template, format);
+
+            // Convert base64 back to blob
+            const byteCharacters = atob(base64);
+            const byteNumbers = new Array(byteCharacters.length);
+            
+            for (let i = 0; i < byteCharacters.length; i++) {
+                byteNumbers[i] = byteCharacters.charCodeAt(i);
+            }
+            
+            const byteArray = new Uint8Array(byteNumbers);
+            const blob = new Blob([byteArray], { type: contentType });
+
+            // Trigger download
+            const url = window.URL.createObjectURL(blob);
+            const link = document.createElement("a");
+
+            link.href = url;
+            link.download = cvTitle;
+
+            document.body.appendChild(link);
+            link.click();
+
+            document.body.removeChild(link);
+            window.URL.revokeObjectURL(url);
             
             showNotification('CV exported successfully!');
         } catch (e: any) {
@@ -242,10 +267,23 @@ function CVBuilder({ cvData }: { cvData: CVWithMetadata | null }) {
                     </div>
                     
                     <div className="flex items-center gap-3">
-                        <button className="flex items-center gap-2 bg-gray-800 hover:bg-gray-700 text-white px-4 py-2 rounded-lg transition-colors border border-gray-600">
-                            <Eye className="w-4 h-4" />
-                            Preview
-                        </button>
+                        <div className="flex gap-3">
+                            <button
+                                onClick={() => fileInputRef.current?.click()}
+                                className="flex items-center gap-2 bg-gray-800 hover:bg-gray-700 text-white px-4 py-2 rounded-lg transition-colors border border-gray-600"
+                            >
+                                <Upload className="w-4 h-4" />
+                                Import CV
+                            </button>
+                            <input
+                                ref={fileInputRef}
+                                type="file"
+                                accept=".pdf,.doc,.docx,.json"
+                                onChange={handleFileImport}
+                                onClick={(e) => e.currentTarget.value = ''}
+                                className="hidden"
+                            />
+                        </div>
                         <button
                             onClick={handleSave}
                             disabled={isSaving}
@@ -263,6 +301,10 @@ function CVBuilder({ cvData }: { cvData: CVWithMetadata | null }) {
                                 </>
                             )}
                         </button>
+                        {/* <button className="flex items-center gap-2 bg-gray-800 hover:bg-gray-700 text-white px-4 py-2 rounded-lg transition-colors border border-gray-600">
+                            <Eye className="w-4 h-4" />
+                            Preview
+                        </button> */}
                         <div className="relative group">
                             <button className="flex items-center gap-2 bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700 text-white px-4 py-2 rounded-lg transition-colors">
                                 <Download className="w-4 h-4" />
@@ -278,11 +320,11 @@ function CVBuilder({ cvData }: { cvData: CVWithMetadata | null }) {
                                     Export as PDF
                                 </button>
                                 <button
-                                    onClick={() => handleExport('word')}
+                                    onClick={() => handleExport('html')}
                                     className="w-full flex items-center gap-3 px-4 py-3 text-left text-gray-300 hover:bg-gray-800 hover:text-white transition-colors"
                                 >
-                                    <FileText className="w-4 h-4" />
-                                    Export as Word
+                                    <Globe className="w-4 h-4" />
+                                    Export as HTML
                                 </button>
                                 <button
                                     onClick={() => handleExport('json')}
@@ -292,23 +334,6 @@ function CVBuilder({ cvData }: { cvData: CVWithMetadata | null }) {
                                     Export as JSON
                                 </button>
                             </div>
-                        </div>
-                        <div className="flex gap-3">
-                            <button
-                                onClick={() => fileInputRef.current?.click()}
-                                className="flex items-center gap-2 bg-gray-800 hover:bg-gray-700 text-white px-4 py-2 rounded-lg transition-colors border border-gray-600"
-                            >
-                                <Upload className="w-4 h-4" />
-                                Import CV
-                            </button>
-                            <input
-                                ref={fileInputRef}
-                                type="file"
-                                accept=".pdf,.doc,.docx,.json"
-                                onChange={handleFileImport}
-                                onClick={(e) => e.currentTarget.value = ''}
-                                className="hidden"
-                            />
                         </div>
                     </div>
                 </div>

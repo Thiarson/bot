@@ -56,12 +56,18 @@ export async function saveCV(cv: CVWithTitle) {
 export async function exportCV(template: string, format: string) {
     try {
         const http = await createHttpRequest();
-        const { data: response } = await http.post<ApiResponse<null>>(
+        const { data } = await http.post(
             "/cv/export",
             { template, format },
+            { responseType: "blob" },
         );
 
-        if (response.status === "error") throw new Error(response.message);
+        const base64 = Buffer.from(data).toString("base64");
+
+        return {
+            contentType: 'application/pdf',
+            data: base64,
+        };
     } catch (e: any) {
         if (e.code === 'ECONNREFUSED') throw Error("Check your internet connection and try again");
         throw Error("Failed to save CV. Please try again");

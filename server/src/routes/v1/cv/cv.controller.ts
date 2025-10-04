@@ -215,19 +215,13 @@ async function exportCV(req: Request, res: Response) {
                     'Content-Type': 'application/json',
                     "X-API-KEY": internalApiKey,
                 },
-                // responseType: "arraybuffer",
+                responseType: "arraybuffer",
                 timeout: requestTimeout,
             },
         );
 
-        response = {
-            code: 200,
-            status: "success",
-            message: "CV exported successfully",
-            data: null,
-        };
-
-        return res.status(response.code).json(response);
+        res.setHeader("Content-Type", "application/pdf");
+        return res.send(Buffer.from(data));
     } catch (e: any) {
         console.error(e)
         const response: ApiResponse<null> = {

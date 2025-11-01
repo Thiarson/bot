@@ -32,7 +32,7 @@
     "typescript": "^5.9.2"
   },
   "dependencies": {
-    "@bot/types": "file:../packages/shared",
+    "@bot/types": "file:../../packages",
     "@prisma/client": "^6.16.2",
     "axios": "^1.12.2",
     "bcrypt": "^6.0.0",

@@ -8,7 +8,7 @@
     "start": "next start"
   },
   "dependencies": {
-    "@bot/types": "link:../packages/shared",
+    "@bot/types": "link:../../packages",
     "@heroicons/react": "^2.2.0",
     "axios": "^1.12.2",
     "bcrypt": "^6.0.0",

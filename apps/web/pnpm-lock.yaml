@@ -9,8 +9,8 @@ importers:
   .:
     dependencies:
       '@bot/types':
-        specifier: link:../packages/shared
-        version: link:../packages/shared
+        specifier: link:../../packages
+        version: link:../../packages
       '@heroicons/react':
         specifier: ^2.2.0
         version: 2.2.0(react@19.1.0)

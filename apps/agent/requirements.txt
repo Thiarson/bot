@@ -1,5 +1,4 @@
 fastapi[standard]==0.118.0
-dotenv==0.9.9
 python-dotenv==1.1.1
 langchain==0.3.27
 langchain-community==0.3.30

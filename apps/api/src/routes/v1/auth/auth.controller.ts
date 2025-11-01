@@ -2,7 +2,7 @@ import jwt from "jsonwebtoken";
 import { jwtSecret } from "@config/api.config";
 import { getUserByEmail, insertUser } from "@models/user.repo";
 
-import type { Request, Response } from "express-serve-static-core";
+import type { RequestHandler } from "express";
 import type { User, UserCredentials } from "@bot/types";
 import type {
     ApiResponse,
@@ -10,7 +10,7 @@ import type {
     LoginRequestBody,
 } from "@bot/types";
 
-async function login(req: Request<{}, {}, LoginRequestBody>, res: Response<ApiResponse<any>>) {
+const login: RequestHandler<{}, ApiResponse<UserCredentials | null>, LoginRequestBody> = async (req, res) => {
     try {
         const { email } = req.body;
         const user = await getUserByEmail(email);
@@ -47,7 +47,7 @@ async function login(req: Request<{}, {}, LoginRequestBody>, res: Response<ApiRe
     }
 }
 
-async function signup(req: Request<{}, {}, SignupRequestBody>, res: Response<ApiResponse<any>>) {
+const signup: RequestHandler<{}, ApiResponse<User | null>, SignupRequestBody> = async (req, res) => {
     try {
         const user = req.body;
         const newUser = await insertUser(user);

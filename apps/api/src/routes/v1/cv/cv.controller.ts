@@ -4,7 +4,7 @@ import { pipeline } from "node:stream/promises";
 import { CvModel } from "model/cv.model";
 import { agentUrl, internalApiKey, requestTimeout } from "@config/api.config";
 
-import type { Request, Response } from "express-serve-static-core";
+import type { Request, Response } from "express";
 import type {
     ApiResponse,
     CVData,

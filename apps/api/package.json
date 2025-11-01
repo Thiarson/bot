@@ -1,5 +1,5 @@
 {
-  "name": "bot",
+  "name": "@bot/api",
   "version": "0.1.0",
   "description": "",
   "license": "ISC",
@@ -32,7 +32,7 @@
     "typescript": "^5.9.2"
   },
   "dependencies": {
-    "@bot/types": "file:../../packages",
+    "@bot/types": "workspace:*",
     "@prisma/client": "^6.16.2",
     "axios": "^1.12.2",
     "bcrypt": "^6.0.0",

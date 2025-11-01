@@ -6,8 +6,10 @@
   "scripts": {
     "dev": "turbo run dev --parallel",
     "build": "turbo run build",
-    "lint": "turbo run lint",
-    "start": "turbo run start"
+    "start": "turbo run start",
+    "postgres:migrate": "cd apps/api && npm run postgres:migrate",
+    "postgres:reset": "cd apps/api && npm run postgres:reset",
+    "postgres:seed": "cd apps/api && npm run postgres:seed"
   },
   "keywords": [],
   "author": "",

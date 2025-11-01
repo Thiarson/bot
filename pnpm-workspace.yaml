@@ -1,3 +1,5 @@
 packages:
-  - "apps/*"
-  - "packages/*"
+  - "packages/types"
+  - "apps/web"
+  - "apps/api"
+  - "apps/agent/wrapper"

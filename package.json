@@ -12,14 +12,9 @@
   "keywords": [],
   "author": "",
   "license": "ISC",
-  "packageManager": "pnpm@10.20.0",
-  "private": true,
-  "workspaces": [
-    "packages/*",
-    "apps/*"
-  ],
   "devDependencies": {
     "turbo": "^2.6.0",
     "typescript": "^5.9.3"
-  }
+  },
+  "packageManager": "pnpm@10.20.0"
 }

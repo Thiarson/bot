@@ -1,0 +1,9 @@
+{
+  "name": "@bot/agent",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "dev": "cd .. && boost_env/bin/python -m uvicorn main:app --reload",
+    "start": "cd .. && boost_env/bin/python -m uvicorn main:app --port"
+  }
+}

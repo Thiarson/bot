@@ -1,20 +1,17 @@
 import { ChevronDown } from "lucide-react";
 
-import AnimatedBackground from "@/components/background";
 import LandingNavbar from "@/components/landing/navbar";
 import LandingCard from "@/components/landing/landing-card";
 
 export default function Page() {
-  return (
-    <div className="min-h-screen bg-black text-white overflow-hidden">
-            {/* Animated background elements */}
-            <AnimatedBackground/>
 
+    return (
+        <div>
             {/* Header */}
             <LandingNavbar/>
 
             {/* Main Content */}
-            <main className="relative z-10">
+            <main>
                 {/* Hero Section */}
                 <section className="px-6 pt-20 pb-32">
                     <LandingCard/>
@@ -26,5 +23,5 @@ export default function Page() {
                 <ChevronDown className="w-6 h-6 text-gray-400" />
             </div>
         </div>
-  );
+    );
 }

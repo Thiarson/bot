@@ -1,15 +1,11 @@
 import { Suspense } from 'react';
 
-import AnimatedBackground from '@/components/background';
 import AuthNavbar from '@/components/auth/navbar';
 import LoginForm from '@/components/auth/login-form';
 
 export default function Page() {
   return (
-    <div className="min-h-screen bg-black text-white relative overflow-hidden">
-      {/* Animated background elements */}
-      <AnimatedBackground/>
-
+    <div className="min-h-screen relative overflow-hidden">
       {/* Header */}
       <AuthNavbar type="login" />
 

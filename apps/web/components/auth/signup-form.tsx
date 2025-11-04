@@ -54,18 +54,18 @@ function SignupForm () {
   return (
     <div className="relative">
       {/* Glowing border effect */}
-      <div className="absolute inset-0 bg-gradient-to-r from-purple-500/20 via-blue-500/20 to-purple-500/20 rounded-2xl blur-xl"></div>
+      <div className="absolute inset-0 bg-gradient-to-r from-purple-500/20 via-blue-500/20 to-purple-500/20 dark:from-purple-500/20 dark:via-blue-500/20 dark:to-purple-500/20 rounded-2xl blur-xl"></div>
       
       {/* Main card */}
-      <div className="relative bg-black/80 backdrop-blur-xl border border-gray-800 rounded-2xl p-8">
+      <div className="relative bg-white/90 dark:bg-black/80 backdrop-blur-xl border border-gray-200 dark:border-gray-800 rounded-2xl p-8">
         {/* Header */}
         <div className="text-center mb-8">
-          <h1 className="text-3xl font-bold mb-2">Create Boost account</h1>
+          <h1 className="text-3xl font-bold mb-2 text-gray-900 dark:text-white">Create Boost account</h1>
         </div>
 
         {/* Social Signup Buttons */}
         <div className="space-y-3 mb-6">
-          <button className="w-full flex items-center justify-center space-x-3 px-4 py-3 bg-white/5 hover:bg-white/10 border border-gray-700 hover:border-gray-600 rounded-lg transition-all transform hover:scale-[1.02]">
+          <button className="w-full flex items-center justify-center space-x-3 px-4 py-3 bg-gray-100 hover:bg-gray-200 dark:bg-white/5 dark:hover:bg-white/10 border border-gray-300 dark:border-gray-700 hover:border-gray-400 dark:hover:border-gray-600 rounded-lg transition-all transform hover:scale-[1.02] text-gray-900 dark:text-white">
             <Chrome className="w-5 h-5" />
             <span>Continue with Google</span>
           </button>
@@ -79,12 +79,12 @@ function SignupForm () {
           {/* Name Fields */}
           <div className="grid grid-cols-2 gap-4">
             <div>
-              <label htmlFor="firstName" className="block text-sm font-medium text-gray-300 mb-2">
+              <label htmlFor="firstName" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
                 First name
               </label>
               <div className="relative">
                 <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                  <User className="h-5 w-5 text-gray-400" />
+                  <User className="h-5 w-5 text-gray-400 dark:text-gray-400" />
                 </div>
                 <input
                   id="firstName"
@@ -93,14 +93,14 @@ function SignupForm () {
                   required
                   value={formData.firstName}
                   onChange={handleInputChange}
-                  className="w-full pl-10 pr-3 py-3 bg-white/5 border border-gray-700 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all text-white placeholder-gray-400"
+                  className="w-full pl-10 pr-3 py-3 bg-gray-50 dark:bg-white/5 border border-gray-300 dark:border-gray-700 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-gray-400"
                   placeholder="First name"
                 />
               </div>
             </div>
             
             <div>
-              <label htmlFor="lastName" className="block text-sm font-medium text-gray-300 mb-2">
+              <label htmlFor="lastName" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
                 Last name
               </label>
               <input
@@ -110,19 +110,19 @@ function SignupForm () {
                 required
                 value={formData.lastName}
                 onChange={handleInputChange}
-                className="w-full px-3 py-3 bg-white/5 border border-gray-700 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all text-white placeholder-gray-400"
+                className="w-full px-3 py-3 bg-gray-50 dark:bg-white/5 border border-gray-300 dark:border-gray-700 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-gray-400"
                 placeholder="Last name"
               />
             </div>
           </div>
 
           <div>
-            <label htmlFor="email" className="block text-sm font-medium text-gray-300 mb-2">
+            <label htmlFor="email" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
               Email address
             </label>
             <div className="relative">
               <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                <Mail className="h-5 w-5 text-gray-400" />
+                <Mail className="h-5 w-5 text-gray-400 dark:text-gray-400" />
               </div>
               <input
                 id="email"
@@ -131,19 +131,19 @@ function SignupForm () {
                 required
                 value={formData.email}
                 onChange={handleInputChange}
-                className="w-full pl-10 pr-3 py-3 bg-white/5 border border-gray-700 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all text-white placeholder-gray-400"
+                className="w-full pl-10 pr-3 py-3 bg-gray-50 dark:bg-white/5 border border-gray-300 dark:border-gray-700 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-gray-400"
                 placeholder="Enter your email"
               />
             </div>
           </div>
 
           <div>
-            <label htmlFor="password" className="block text-sm font-medium text-gray-300 mb-2">
+            <label htmlFor="password" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
               Password
             </label>
             <div className="relative">
               <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                <Lock className="h-5 w-5 text-gray-400" />
+                <Lock className="h-5 w-5 text-gray-400 dark:text-gray-400" />
               </div>
               <input
                 id="password"
@@ -152,18 +152,18 @@ function SignupForm () {
                 required
                 value={formData.password}
                 onChange={handleInputChange}
-                className="w-full pl-10 pr-12 py-3 bg-white/5 border border-gray-700 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all text-white placeholder-gray-400"
+                className="w-full pl-10 pr-12 py-3 bg-gray-50 dark:bg-white/5 border border-gray-300 dark:border-gray-700 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-gray-400"
                 placeholder="Create a password"
               />
               <button
                 type="button"
                 onClick={() => setShowPassword(!showPassword)}
-                className="absolute inset-y-0 right-0 pr-3 flex items-center hover:text-gray-300 transition-colors"
+                className="absolute inset-y-0 right-0 pr-3 flex items-center text-gray-600 hover:text-gray-800 dark:text-gray-400 dark:hover:text-gray-300 transition-colors"
               >
                 {showPassword ? (
-                  <EyeOff className="h-5 w-5 text-gray-400" />
+                  <EyeOff className="h-5 w-5" />
                 ) : (
-                  <Eye className="h-5 w-5 text-gray-400" />
+                  <Eye className="h-5 w-5" />
                 )}
               </button>
             </div>
@@ -176,12 +176,12 @@ function SignupForm () {
                     <div
                       key={i}
                       className={`h-1 flex-1 rounded ${
-                        i < passwordStrength ? strengthColors[passwordStrength - 1] : 'bg-gray-600'
+                        i < passwordStrength ? strengthColors[passwordStrength - 1] : 'bg-gray-300 dark:bg-gray-600'
                       } transition-colors`}
                     />
                   ))}
                 </div>
-                <p className="text-xs text-gray-400">
+                <p className="text-xs text-gray-600 dark:text-gray-400">
                   Password strength: {strengthLabels[passwordStrength - 1] || 'Too weak'}
                 </p>
               </div>
@@ -189,12 +189,12 @@ function SignupForm () {
           </div>
 
           <div>
-            <label htmlFor="confirmPassword" className="block text-sm font-medium text-gray-300 mb-2">
+            <label htmlFor="confirmPassword" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
               Confirm password
             </label>
             <div className="relative">
               <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                <Lock className="h-5 w-5 text-gray-400" />
+                <Lock className="h-5 w-5 text-gray-400 dark:text-gray-400" />
               </div>
               <input
                 id="confirmPassword"
@@ -203,18 +203,18 @@ function SignupForm () {
                 required
                 value={formData.confirmPassword}
                 onChange={handleInputChange}
-                className="w-full pl-10 pr-12 py-3 bg-white/5 border border-gray-700 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all text-white placeholder-gray-400"
+                className="w-full pl-10 pr-12 py-3 bg-gray-50 dark:bg-white/5 border border-gray-300 dark:border-gray-700 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-gray-400"
                 placeholder="Confirm your password"
               />
               <button
                 type="button"
                 onClick={() => setShowConfirmPassword(!showConfirmPassword)}
-                className="absolute inset-y-0 right-0 pr-3 flex items-center hover:text-gray-300 transition-colors"
+                className="absolute inset-y-0 right-0 pr-3 flex items-center text-gray-600 hover:text-gray-800 dark:text-gray-400 dark:hover:text-gray-300 transition-colors"
               >
                 {showConfirmPassword ? (
-                  <EyeOff className="h-5 w-5 text-gray-400" />
+                  <EyeOff className="h-5 w-5" />
                 ) : (
-                  <Eye className="h-5 w-5 text-gray-400" />
+                  <Eye className="h-5 w-5" />
                 )}
               </button>
             </div>
@@ -223,12 +223,12 @@ function SignupForm () {
             {formData.confirmPassword && (
               <div className="mt-2">
                 {formData.password === formData.confirmPassword ? (
-                  <div className="flex items-center space-x-2 text-green-400">
+                  <div className="flex items-center space-x-2 text-green-600 dark:text-green-400">
                     <Check className="w-4 h-4" />
                     <span className="text-xs">Passwords match</span>
                   </div>
                 ) : (
-                  <span className="text-xs text-red-400">Passwords don't match</span>
+                  <span className="text-xs text-red-600 dark:text-red-400">Passwords don't match</span>
                 )}
               </div>
             )}
@@ -243,15 +243,15 @@ function SignupForm () {
                 checked={formData.acceptTerms}
                 onChange={handleInputChange}
                 required
-                className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-700 rounded bg-transparent mt-0.5"
+                className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 dark:border-gray-700 rounded bg-transparent mt-0.5"
               />
-              <label htmlFor="acceptTerms" className="ml-2 block text-sm text-gray-300">
+              <label htmlFor="acceptTerms" className="ml-2 block text-sm text-gray-700 dark:text-gray-300">
                 I agree to the{' '}
-                <Link href="#" className="text-blue-400 hover:text-blue-300 transition-colors">
+                <Link href="#" className="text-blue-600 hover:text-blue-700 dark:text-blue-400 dark:hover:text-blue-300 transition-colors">
                   Terms of Service
                 </Link>{' '}
                 and{' '}
-                <Link href="#" className="text-blue-400 hover:text-blue-300 transition-colors">
+                <Link href="#" className="text-blue-600 hover:text-blue-700 dark:text-blue-400 dark:hover:text-blue-300 transition-colors">
                   Privacy Policy
                 </Link>
               </label>
@@ -262,7 +262,7 @@ function SignupForm () {
           <button
             type="submit"
             disabled={!formData.acceptTerms || formData.password !== formData.confirmPassword || isPending}
-            className="group w-full flex items-center justify-center space-x-2 px-4 py-3 bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 disabled:from-gray-600 disabled:to-gray-700 disabled:cursor-not-allowed rounded-lg transition-all transform hover:scale-[1.02] disabled:hover:scale-100 font-semibold shadow-lg"
+            className="group w-full flex items-center justify-center space-x-2 px-4 py-3 bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 disabled:from-gray-600 disabled:to-gray-700 disabled:cursor-not-allowed rounded-lg transition-all transform hover:scale-[1.02] disabled:hover:scale-100 font-semibold shadow-lg text-white"
           >
             <span>Create account</span>
             <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />

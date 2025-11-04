@@ -25,9 +25,9 @@ function AuthNavbar({ type }: PropsType) {
             <nav className="max-w-7xl mx-auto flex items-center justify-between">
                 <Logo/>
                 
-                <div className="text-sm text-gray-400">
+                <div className="text-sm text-gray-600 dark:text-gray-400">
                     <span>{message} </span>
-                    <Link href={path} className="text-blue-400 hover:text-blue-300 transition-colors">
+                    <Link href={path} className="text-blue-600 hover:text-blue-700 dark:text-blue-400 dark:hover:text-blue-300 transition-colors">
                         {action}
                     </Link>
                 </div>

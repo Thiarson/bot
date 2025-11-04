@@ -38,15 +38,15 @@ function LoginForm() {
       <div className="absolute inset-0 bg-gradient-to-r from-purple-500/20 via-blue-500/20 to-purple-500/20 rounded-2xl blur-xl"></div>
       
       {/* Main card */}
-      <div className="relative bg-black/80 backdrop-blur-xl border border-gray-800 rounded-2xl p-8">
+      <div className="relative bg-white/95 dark:bg-black/80 backdrop-blur-xl border border-gray-200 dark:border-gray-800 rounded-2xl p-8">
         {/* Header */}
         <div className="text-center mb-8">
-          <h1 className="text-3xl font-bold mb-2">Sign in to Boost</h1>
+          <h1 className="text-3xl font-bold mb-2 text-gray-900 dark:text-white">Sign in to Boost</h1>
         </div>
 
         {/* Social Login Buttons */}
         <div className="space-y-3 mb-6">
-          <button className="w-full flex items-center justify-center space-x-3 px-4 py-3 bg-white/5 hover:bg-white/10 border border-gray-700 hover:border-gray-600 rounded-lg transition-all transform hover:scale-[1.02]">
+          <button className="w-full flex items-center justify-center space-x-3 px-4 py-3 bg-gray-100 hover:bg-gray-200 dark:bg-white/5 dark:hover:bg-white/10 border border-gray-300 dark:border-gray-700 hover:border-gray-400 dark:hover:border-gray-600 rounded-lg transition-all transform hover:scale-[1.02] text-gray-900 dark:text-white">
             <Chrome className="w-5 h-5" />
             <span>Continue with Google</span>
           </button>
@@ -58,7 +58,7 @@ function LoginForm() {
         {/* Login Form */}
         <form action={formAction} className="space-y-6">
           <div>
-            <label htmlFor="email" className="block text-sm font-medium text-gray-300 mb-2">
+            <label htmlFor="email" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
               Email address
             </label>
             <div className="relative">
@@ -72,14 +72,14 @@ function LoginForm() {
                 required
                 value={formData.email}
                 onChange={handleInputChange}
-                className="w-full pl-10 pr-3 py-3 bg-white/5 border border-gray-700 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all text-white placeholder-gray-400"
+                className="w-full pl-10 pr-3 py-3 bg-gray-50 dark:bg-white/5 border border-gray-300 dark:border-gray-700 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all text-gray-900 dark:text-white placeholder-gray-400"
                 placeholder="Enter your email"
               />
             </div>
           </div>
 
           <div>
-            <label htmlFor="password" className="block text-sm font-medium text-gray-300 mb-2">
+            <label htmlFor="password" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
               Password
             </label>
             <div className="relative">
@@ -93,18 +93,18 @@ function LoginForm() {
                 required
                 value={formData.password}
                 onChange={handleInputChange}
-                className="w-full pl-10 pr-12 py-3 bg-white/5 border border-gray-700 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all text-white placeholder-gray-400"
+                className="w-full pl-10 pr-12 py-3 bg-gray-50 dark:bg-white/5 border border-gray-300 dark:border-gray-700 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all text-gray-900 dark:text-white placeholder-gray-400"
                 placeholder="Enter your password"
               />
               <button
                 type="button"
                 onClick={() => setShowPassword(!showPassword)}
-                className="absolute inset-y-0 right-0 pr-3 flex items-center hover:text-gray-300 transition-colors"
+                className="absolute inset-y-0 right-0 pr-3 flex items-center text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-300 transition-colors"
               >
                 {showPassword ? (
-                  <EyeOff className="h-5 w-5 text-gray-400" />
+                  <EyeOff className="h-5 w-5" />
                 ) : (
-                  <Eye className="h-5 w-5 text-gray-400" />
+                  <Eye className="h-5 w-5" />
                 )}
               </button>
             </div>
@@ -118,15 +118,15 @@ function LoginForm() {
                 type="checkbox"
                 checked={formData.rememberMe}
                 onChange={handleInputChange}
-                className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-700 rounded bg-transparent"
+                className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 dark:border-gray-700 rounded bg-transparent"
               />
-              <label htmlFor="rememberMe" className="ml-2 block text-sm text-gray-300">
+              <label htmlFor="rememberMe" className="ml-2 block text-sm text-gray-700 dark:text-gray-300">
                 Remember me
               </label>
             </div>
 
             <div className="text-sm">
-              <Link href="#" className="text-blue-400 hover:text-blue-300 transition-colors">
+              <Link href="#" className="text-blue-600 hover:text-blue-700 dark:text-blue-400 dark:hover:text-blue-300 transition-colors">
                 Forgot password?
               </Link>
             </div>
@@ -136,7 +136,7 @@ function LoginForm() {
           <button
             type="submit"
             disabled={isPending}
-            className="group w-full flex items-center justify-center space-x-2 px-4 py-3 bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 rounded-lg transition-all transform hover:scale-[1.02] font-semibold shadow-lg disabled:from-gray-600 disabled:to-gray-700 disabled:cursor-not-allowed disabled:hover:scale-100"
+            className="group w-full flex items-center justify-center space-x-2 px-4 py-3 bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 rounded-lg transition-all transform hover:scale-[1.02] font-semibold shadow-lg disabled:from-gray-600 disabled:to-gray-700 disabled:cursor-not-allowed disabled:hover:scale-100 text-white"
           >
             <span>Sign in</span>
             <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />

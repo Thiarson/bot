@@ -19,6 +19,8 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(logger("dev"));
 
+app.use("/health", (_req, res) => res.status(200).json({ status: "ok" }));
+
 app.use("/api/v1", routerV1);
 
 export default app;

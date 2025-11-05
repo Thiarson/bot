@@ -252,15 +252,15 @@ function CVBuilder({ cvData }: { cvData: CVWithMetadata | null }) {
     return (
         <div className="py-6">
             {/* Header */}
-            <div className="bg-black border-b border-gray-800 px-6 py-4 mb-6 -mx-6">
+            <div className="bg-white dark:bg-black border-b border-gray-200 dark:border-gray-800 px-6 py-4 mb-6 -mx-6">
                 <div className="flex justify-between items-center">
                     <div className="flex items-center gap-4">
                         <div className="w-8 h-8 bg-gradient-to-r from-purple-500 to-blue-600 rounded-lg flex items-center justify-center">
                             <FileText className="w-5 h-5 text-white" />
                         </div>
                         <div>
-                            <h1 className="text-xl font-semibold text-white">{cvTitle}</h1>
-                            <p className="text-sm text-gray-400">
+                            <h1 className="text-xl font-semibold text-gray-900 dark:text-white">{cvTitle}</h1>
+                            <p className="text-sm text-gray-600 dark:text-gray-400">
                                 {lastSaved ? `Last saved ${new Date(lastSaved).toLocaleTimeString()}` : 'Unsaved changes'}
                             </p>
                         </div>
@@ -270,7 +270,7 @@ function CVBuilder({ cvData }: { cvData: CVWithMetadata | null }) {
                         <div className="flex gap-3">
                             <button
                                 onClick={() => fileInputRef.current?.click()}
-                                className="flex items-center gap-2 bg-gray-800 hover:bg-gray-700 text-white px-4 py-2 rounded-lg transition-colors border border-gray-600"
+                                className="flex items-center gap-2 bg-gray-100 hover:bg-gray-200 dark:bg-gray-800 dark:hover:bg-gray-700 text-gray-900 dark:text-white px-4 py-2 rounded-lg transition-colors border border-gray-300 dark:border-gray-600"
                             >
                                 <Upload className="w-4 h-4" />
                                 Import CV
@@ -301,7 +301,7 @@ function CVBuilder({ cvData }: { cvData: CVWithMetadata | null }) {
                                 </>
                             )}
                         </button>
-                        {/* <button className="flex items-center gap-2 bg-gray-800 hover:bg-gray-700 text-white px-4 py-2 rounded-lg transition-colors border border-gray-600">
+                        {/* <button className="flex items-center gap-2 bg-gray-100 hover:bg-gray-200 dark:bg-gray-800 dark:hover:bg-gray-700 text-gray-900 dark:text-white px-4 py-2 rounded-lg transition-colors border border-gray-300 dark:border-gray-600">
                             <Eye className="w-4 h-4" />
                             Preview
                         </button> */}
@@ -311,24 +311,24 @@ function CVBuilder({ cvData }: { cvData: CVWithMetadata | null }) {
                                 Export
                                 <ChevronDown className="w-4 h-4" />
                             </button>
-                            <div className="absolute right-0 mt-2 w-48 bg-gray-900 border border-gray-700 rounded-lg shadow-xl opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 z-50">
+                            <div className="absolute right-0 mt-2 w-48 bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-700 rounded-lg shadow-xl opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 z-50">
                                 <button
                                     onClick={() => handleExport('pdf')}
-                                    className="w-full flex items-center gap-3 px-4 py-3 text-left text-gray-300 hover:bg-gray-800 hover:text-white transition-colors"
+                                    className="w-full flex items-center gap-3 px-4 py-3 text-left text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800 hover:text-gray-900 dark:hover:text-white transition-colors"
                                 >
                                     <FileText className="w-4 h-4" />
                                     Export as PDF
                                 </button>
                                 <button
                                     onClick={() => handleExport('html')}
-                                    className="w-full flex items-center gap-3 px-4 py-3 text-left text-gray-300 hover:bg-gray-800 hover:text-white transition-colors"
+                                    className="w-full flex items-center gap-3 px-4 py-3 text-left text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800 hover:text-gray-900 dark:hover:text-white transition-colors"
                                 >
                                     <Globe className="w-4 h-4" />
                                     Export as HTML
                                 </button>
                                 <button
                                     onClick={() => handleExport('json')}
-                                    className="w-full flex items-center gap-3 px-4 py-3 text-left text-gray-300 hover:bg-gray-800 hover:text-white transition-colors"
+                                    className="w-full flex items-center gap-3 px-4 py-3 text-left text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800 hover:text-gray-900 dark:hover:text-white transition-colors"
                                 >
                                     <Code className="w-4 h-4" />
                                     Export as JSON
@@ -342,15 +342,15 @@ function CVBuilder({ cvData }: { cvData: CVWithMetadata | null }) {
             <div className="flex gap-6">
                 {/* Main Content */}
                 <div className="flex-1 min-w-0">
-                    <div className="bg-gray-900 border border-gray-700 rounded-lg p-8">
+                    <div className="bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-700 rounded-lg p-8">
                         {renderActiveSection()}
                     </div>
                 </div>
 
                 {/* Progress Sidebar */}
                 <div className="w-80 flex-shrink-0">
-                    <div className="bg-gray-900 border border-gray-700 rounded-lg p-6 mb-6">
-                        <h3 className="text-lg font-medium text-white mb-4">CV Progress</h3>
+                    <div className="bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-700 rounded-lg p-6 mb-6">
+                        <h3 className="text-lg font-medium text-gray-900 dark:text-white mb-4">CV Progress</h3>
                         <div className="space-y-3">
                             {sidebarItems.map((item) => {
                                 const Icon = item.icon;
@@ -362,7 +362,7 @@ function CVBuilder({ cvData }: { cvData: CVWithMetadata | null }) {
                                         className={`w-full flex items-center justify-between px-4 py-3 rounded-lg text-left transition-colors ${
                                             activeSection === item.id
                                                 ? 'bg-gradient-to-r from-purple-600 to-blue-600 text-white'
-                                                : 'text-gray-300 hover:bg-gray-800 hover:text-white'
+                                                : 'text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800 hover:text-gray-900 dark:hover:text-white'
                                         }`}
                                     >
                                         <div className="flex items-center gap-3">
@@ -379,27 +379,27 @@ function CVBuilder({ cvData }: { cvData: CVWithMetadata | null }) {
                     </div>
 
                     {/* Quick Stats */}
-                    <div className="bg-gray-900 border border-gray-700 rounded-lg p-6">
-                        <h3 className="text-lg font-medium text-white mb-4">CV Statistics</h3>
+                    <div className="bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-700 rounded-lg p-6">
+                        <h3 className="text-lg font-medium text-gray-900 dark:text-white mb-4">CV Statistics</h3>
                         <div className="space-y-3">
                             <div className="flex justify-between">
-                                <span className="text-gray-400">Completion</span>
-                                <span className="text-white font-medium">75%</span>
+                                <span className="text-gray-600 dark:text-gray-400">Completion</span>
+                                <span className="text-gray-900 dark:text-white font-medium">75%</span>
                             </div>
-                            <div className="w-full bg-gray-700 rounded-full h-2">
+                            <div className="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-2">
                                 <div className="bg-gradient-to-r from-purple-500 to-blue-500 h-2 rounded-full" style={{ width: '75%' }}></div>
                             </div>
                             <div className="flex justify-between">
-                                <span className="text-gray-400">Sections</span>
-                                <span className="text-white font-medium">4/6</span>
+                                <span className="text-gray-600 dark:text-gray-400">Sections</span>
+                                <span className="text-gray-900 dark:text-white font-medium">4/6</span>
                             </div>
                             <div className="flex justify-between">
-                                <span className="text-gray-400">Skills</span>
-                                <span className="text-white font-medium">{skills.length}</span>
+                                <span className="text-gray-600 dark:text-gray-400">Skills</span>
+                                <span className="text-gray-900 dark:text-white font-medium">{skills.length}</span>
                             </div>
                             <div className="flex justify-between">
-                                <span className="text-gray-400">Experience</span>
-                                <span className="text-white font-medium">{experiences.length} positions</span>
+                                <span className="text-gray-600 dark:text-gray-400">Experience</span>
+                                <span className="text-gray-900 dark:text-white font-medium">{experiences.length} positions</span>
                             </div>
                         </div>
                     </div>

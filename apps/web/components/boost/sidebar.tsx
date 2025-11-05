@@ -25,7 +25,7 @@ function Sidebar() {
     }
 
     return (
-        <aside className="w-80 lg:w-72 md:w-20 sm:w-16 bg-black border-r border-gray-800 h-full p-8 md:p-6 sm:p-2 transition-all duration-300">
+        <aside className="w-80 lg:w-72 md:w-20 sm:w-16 bg-white dark:bg-black border-r border-gray-200 dark:border-gray-800 h-full p-8 md:p-6 sm:p-2 transition-all duration-300">
             <nav className="space-y-3 md:space-y-2">
                 {[
                     { id: 'dashboard', icon: TrendingUp, label: 'Dashboard', href: '/boost/dashboard' },
@@ -43,7 +43,7 @@ function Sidebar() {
                         className={`group relative w-full flex items-center justify-center md:justify-start space-x-4 md:space-x-3 px-4 md:px-2 py-3 rounded-lg text-left transition-all duration-200 ${
                         activeTab === id 
                             ? 'bg-gradient-to-r from-purple-600 to-blue-600 text-white' 
-                            : 'text-gray-400 hover:text-white hover:bg-gray-900'
+                            : 'text-gray-600 hover:text-gray-900 dark:text-gray-400 dark:hover:text-white hover:bg-gray-100 dark:hover:bg-gray-900'
                         }`}
                         title={label} // Tooltip for collapsed state
                     >
@@ -53,7 +53,7 @@ function Sidebar() {
                         </span>
                         
                         {/* Tooltip for medium screens and below */}
-                        <div className="absolute left-full ml-2 px-2 py-1 bg-gray-800 text-white text-sm rounded opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 whitespace-nowrap z-50 lg:hidden">
+                        <div className="absolute left-full ml-2 px-2 py-1 bg-gray-800 dark:bg-gray-800 text-white text-sm rounded opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 whitespace-nowrap z-50 lg:hidden">
                             {label}
                         </div>
                     </Link>

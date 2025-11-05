@@ -6,7 +6,7 @@ import Sidebar from '@/components/boost/sidebar';
 export default function Layout({ children }: { children: React.ReactNode }) {
   return (
     <SessionProvider>
-      <div className="h-screen bg-black text-white flex flex-col overflow-hidden">
+      <div className="h-screen flex flex-col overflow-hidden">
         {/* Fixed Header */}
         <div className="flex-shrink-0">
           <Navbar/>

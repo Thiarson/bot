@@ -15,17 +15,17 @@ interface NotificationProps {
 }
 
 const NotificationContainer: React.FC<NotificationProps> = ({ notifications, onClose }) => {
-  return (
-    <div className="fixed top-4 right-4 z-50 flex flex-col gap-3 max-w-md">
-        {notifications.map((notification) => (
-            <NotificationToast
-                key={notification.id}
-                notification={notification}
-                onClose={onClose}
-            />
-        ))}
-    </div>
-  );
+    return (
+        <div className="fixed top-4 right-4 z-50 flex flex-col gap-3 max-w-md">
+            {notifications.map((notification) => (
+                <NotificationToast
+                    key={notification.id}
+                    notification={notification}
+                    onClose={onClose}
+                />
+            ))}
+        </div>
+    );
 };
 
 const NotificationToast: React.FC<{
@@ -91,54 +91,54 @@ const NotificationToast: React.FC<{
                 isExiting ? 'animate-slideOut' : 'animate-slideIn'
             }`}
         >
-        <div className={`${styles.iconBg} p-2 rounded-lg flex-shrink-0`}>
-            {styles.icon}
-        </div>
-        
-        <div className="flex-1 pt-0.5">
-            <p className="text-white text-sm font-medium leading-relaxed">
-            {notification.message}
-            </p>
-        </div>
+            <div className={`${styles.iconBg} p-2 rounded-lg flex-shrink-0`}>
+                {styles.icon}
+            </div>
 
-        <button
-            onClick={handleClose}
-            className="text-gray-400 hover:text-white transition-colors flex-shrink-0"
-        >
-            <X className="w-4 h-4" />
-        </button>
+            <div className="flex-1 pt-0.5">
+                <p className="text-white text-sm font-medium leading-relaxed">
+                    {notification.message}
+                </p>
+            </div>
 
-        <style jsx>{`
-            @keyframes slideIn {
-                from {
-                    transform: translateX(100%);
-                    opacity: 0;
+            <button
+                onClick={handleClose}
+                className="text-gray-400 hover:text-white transition-colors flex-shrink-0"
+            >
+                <X className="w-4 h-4" />
+            </button>
+
+            <style jsx>{`
+                @keyframes slideIn {
+                    from {
+                        transform: translateX(100%);
+                        opacity: 0;
+                    }
+                    to {
+                        transform: translateX(0);
+                        opacity: 1;
+                    }
                 }
-                to {
-                    transform: translateX(0);
-                    opacity: 1;
+                
+                @keyframes slideOut {
+                    from {
+                        transform: translateX(0);
+                        opacity: 1;
+                    }
+                    to {
+                        transform: translateX(100%);
+                        opacity: 0;
+                    }
                 }
-            }
-            
-            @keyframes slideOut {
-                from {
-                    transform: translateX(0);
-                    opacity: 1;
+                
+                .animate-slideIn {
+                    animation: slideIn 0.3s ease-out;
                 }
-                to {
-                    transform: translateX(100%);
-                    opacity: 0;
+                
+                .animate-slideOut {
+                    animation: slideOut 0.3s ease-out;
                 }
-            }
-            
-            .animate-slideIn {
-                animation: slideIn 0.3s ease-out;
-            }
-            
-            .animate-slideOut {
-                animation: slideOut 0.3s ease-out;
-            }
-        `}</style>
+            `}</style>
         </div>
     );
 };

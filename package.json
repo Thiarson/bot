@@ -7,9 +7,9 @@
     "dev": "turbo run dev --parallel",
     "build": "turbo run build",
     "start": "turbo run start",
-    "postgres:migrate": "cd apps/api && npm run postgres:migrate",
-    "postgres:reset": "cd apps/api && npm run postgres:reset",
-    "postgres:seed": "cd apps/api && npm run postgres:seed"
+    "pg:migrate": "cd apps/api && npm run postgres:migrate",
+    "pg:reset": "cd apps/api && npm run postgres:reset",
+    "pg:seed": "cd apps/api && npm run postgres:seed"
   },
   "keywords": [],
   "author": "",

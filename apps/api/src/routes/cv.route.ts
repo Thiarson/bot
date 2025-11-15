@@ -2,7 +2,7 @@ import { Router } from "express";
 
 import { validateToken } from "@middlewares/auth.middleware";
 import { upload } from "@middlewares/upload.middleware";
-import cvController from "./cv.controller";
+import cvController from "@controllers/cv.controller";
 
 const cvRouter = Router();
 

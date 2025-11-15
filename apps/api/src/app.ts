@@ -5,7 +5,7 @@ import cookieParser from "cookie-parser";
 import logger from "morgan";
 import { frontendUrl } from "@config/api.config";
 
-import routerV1 from "./routes/v1/router";
+import routerV1 from "@routes/router";
 
 const app = express();
 

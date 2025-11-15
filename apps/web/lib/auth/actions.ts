@@ -27,12 +27,14 @@ export async function authenticate(
         await signIn('credentials', formData);
     } catch (e) {
         if (e instanceof AuthError) {
-            switch (e.type) {
-                case 'CredentialsSignin':
-                    return 'Invalid credentials';
-                default:
-                    return 'Something went wrong';
-            }
+            // switch (e.type) {
+            //     case 'CredentialsSignin':
+            //         return 'Invalid credentials';
+            //     default:
+            //         return 'Something went wrong';
+            // }
+
+            return "Invalid credentials";
         }
         
         throw e;

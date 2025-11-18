@@ -1,5 +1,5 @@
 import jwt from "jsonwebtoken";
-import { jwtSecret } from "@config/api.config";
+import { jwtSecret } from "src/config/api.config";
 
 import type { Request, Response, NextFunction } from "express";
 import type { JwtPayload } from "jsonwebtoken";

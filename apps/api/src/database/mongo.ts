@@ -1,5 +1,5 @@
 import mongoose, { Mongoose } from "mongoose";
-import { mongoUrl } from "@config/mongo.config";
+import { mongoUrl } from "src/config/mongo.config";
 
 export async function connectToMongo(): Promise<Mongoose> {
     if (!mongoUrl) throw new Error("MONGODB_URI env var is required");

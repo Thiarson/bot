@@ -3,7 +3,7 @@ import cors from "cors";
 import helmet from "helmet";
 import cookieParser from "cookie-parser";
 import logger from "morgan";
-import { frontendUrl } from "@config/api.config";
+import { frontendUrl } from "src/config/api.config";
 
 import routerV1 from "@routes/router";
 

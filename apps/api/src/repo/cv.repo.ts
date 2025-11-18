@@ -1,4 +1,4 @@
-import pg from "database/pg";
+import pg from "src/database/pg";
 
 async function getSavedCv(userId: number) {
     const query = {

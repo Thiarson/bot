@@ -21,7 +21,7 @@ function LoginForm() {
     undefined,
   );
   const searchParams = useSearchParams();
-  const callbackUrl = searchParams.get('callbackUrl') || '/boost';
+  const callbackUrl = searchParams?.get('callbackUrl') || '/boost';
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value, type, checked } = e.target;

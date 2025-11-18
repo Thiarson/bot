@@ -1,5 +1,5 @@
 import { Redis } from "ioredis";
-import { redisConfig } from "@config/redis.config";
+import { redisConfig } from "src/config/redis.config";
 
 export const redisConnection = new Redis({
     host: redisConfig.host,

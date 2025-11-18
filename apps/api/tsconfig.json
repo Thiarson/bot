@@ -7,14 +7,14 @@
     "strict": true,
     "baseUrl": ".",
     "paths": {
-      "@config/*": ["./config/*"],
+      "@config/*": ["src/config/*"],
       "@routes/*": ["./src/routes/*"],
       "@controllers/*": ["./src/controllers/*"],
-      "@models/*": ["./repo/*"],
+      "@models/*": ["src/repo/*"],
       "@middlewares/*": ["./src/middlewares/*"],
 
-      "database/*": ["./database/*"],
-      "model/*": ["./model/*"],
+      "database/*": ["src/database/*"],
+      "model/*": ["src/model/*"],
     }
   },
 }

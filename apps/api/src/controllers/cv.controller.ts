@@ -1,9 +1,9 @@
 import axios from "axios";
 import { v4 as uuidv4 } from "uuid";
 import { pipeline } from "node:stream/promises";
-import { CvModel } from "model/cv.model";
-import { agentUrl, internalApiKey, requestTimeout } from "config/api.config";
-import { generateSignedUrlForFileUpload } from "services/storage.service";
+import { CvModel } from "src/model/cv.model";
+import { agentUrl, internalApiKey, requestTimeout } from "src/config/api.config";
+import { generateSignedUrlForFileUpload } from "src/services/storage.service";
 import { validateFiletype, getFileExtenstionByType } from "../helpers/file-manager";
 
 import type { Request, Response } from "express";
@@ -14,7 +14,7 @@ import type {
     CVWithTitle,
     PresignedUrl,
 } from "@bot/types";
-import { getSavedCv, upsertCV } from "@models/cv.repo";
+import { getSavedCv, upsertCV } from "src/repo/cv.repo";
 import { cvQueue } from "src/helpers/queue";
 import { addSocketEmitter } from "src/helpers/web-socket";
 

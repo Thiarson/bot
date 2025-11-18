@@ -1,6 +1,6 @@
 import jwt from "jsonwebtoken";
-import { jwtSecret } from "@config/api.config";
-import { getUserByEmail, insertUser } from "@models/user.repo";
+import { jwtSecret } from "src/config/api.config";
+import { getUserByEmail, insertUser } from "src/repo/user.repo";
 
 import type { RequestHandler } from "express";
 import type { User, UserCredentials } from "@bot/types";

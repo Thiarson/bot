@@ -18,7 +18,7 @@ import { SidebarSkeleton } from "./skeleton";
 function Sidebar() {
     const { status } = useSession();
     const pathname = usePathname();
-    const activeTab = pathname.split('/')[2] || 'dashboard';
+    const activeTab = pathname?.split('/')[2] || 'dashboard';
 
     if (status === "loading") {
         return <SidebarSkeleton/>;

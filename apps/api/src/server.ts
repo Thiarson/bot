@@ -1,7 +1,7 @@
 import http from "node:http";
 
 import app from "./app";
-import { connectToMongo } from "database/mongo";
+import { connectToMongo } from "src/database/mongo";
 import { initSocketServer } from "./helpers/web-socket";
 
 const server = http.createServer(app);

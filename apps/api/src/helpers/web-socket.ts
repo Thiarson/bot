@@ -1,7 +1,7 @@
 import http from "node:http";
 import { Server, Socket } from "socket.io";
 
-import { frontendUrl } from "@config/api.config";
+import { frontendUrl } from "src/config/api.config";
 
 let io: Server;
 

@@ -1,6 +1,6 @@
 import { S3Client, PutObjectCommand, S3ClientConfig } from "@aws-sdk/client-s3";
 import { getSignedUrl } from "@aws-sdk/s3-request-presigner";
-import { awsConfig, stage } from "@config/aws.config";
+import { awsConfig, stage } from "src/config/aws.config";
 
 const s3Options: S3ClientConfig = {
     credentials: {

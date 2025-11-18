@@ -27,8 +27,8 @@ function CVTemplate({ title, setTitle, template: selectedTemplate, setTemplate }
         <div className="space-y-6">
             <div className="flex justify-between items-center">
                 <div>
-                    <h2 className="text-2xl font-semibold text-white mb-2">Choose Your Template</h2>
-                    <p className="text-gray-400">Select a professional template that matches your style</p>
+                    <h2 className="text-2xl font-semibold text-gray-900 dark:text-white mb-2">Choose Your Template</h2>
+                    <p className="text-gray-600 dark:text-gray-400">Select a professional template that matches your style</p>
                 </div>
             </div>
             
@@ -39,14 +39,14 @@ function CVTemplate({ title, setTitle, template: selectedTemplate, setTemplate }
                     onClick={() => setTemplate(template.id)}
                     className={`relative cursor-pointer border-2 rounded-lg p-6 transition-all hover:scale-105 ${
                     selectedTemplate === template.id
-                        ? 'border-purple-500 bg-purple-500/10'
-                        : 'border-gray-700 bg-gray-900 hover:border-gray-600'
+                        ? 'border-purple-500 bg-purple-50 dark:bg-purple-500/10'
+                        : 'border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-900 hover:border-gray-400 dark:hover:border-gray-600'
                     }`}
                 >
                     <div className="text-center">
                         <div className="text-4xl mb-4">{template.thumbnail}</div>
-                        <h3 className="text-lg font-medium text-white mb-2">{template.name}</h3>
-                        <p className="text-sm text-gray-400 capitalize">{template.style} style</p>
+                        <h3 className="text-lg font-medium text-gray-900 dark:text-white mb-2">{template.name}</h3>
+                        <p className="text-sm text-gray-600 dark:text-gray-400 capitalize">{template.style} style</p>
                     </div>
                     {selectedTemplate === template.id && (
                     <div className="absolute top-3 right-3">
@@ -59,15 +59,15 @@ function CVTemplate({ title, setTitle, template: selectedTemplate, setTemplate }
                 ))}
             </div>
 
-            <div className="bg-gray-900 border border-gray-700 rounded-lg p-6">
+            <div className="bg-white dark:bg-gray-900 border border-gray-300 dark:border-gray-700 rounded-lg p-6">
                 <div className="flex items-start justify-between">
                     <div className="flex-1">
-                        <h3 className="text-lg font-medium text-white mb-4">CV Title</h3>
+                        <h3 className="text-lg font-medium text-gray-900 dark:text-white mb-4">CV Title</h3>
                         <input
                             type="text"
                             value={title}
                             onChange={(e) => setTitle(e.target.value)}
-                            className="w-full max-w-md bg-gray-800 border border-gray-600 rounded-lg px-4 py-3 text-white focus:outline-none focus:ring-2 focus:ring-purple-500"
+                            className="w-full max-w-md bg-gray-50 dark:bg-gray-800 border border-gray-300 dark:border-gray-600 rounded-lg px-4 py-3 text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-purple-500"
                             placeholder="My Professional CV"
                         />
                     </div>

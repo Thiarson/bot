@@ -20,11 +20,11 @@ type PropsType = {
     setEducations: Dispatch<SetStateAction<Education[]>>
 }
 
-function CVEduction({ educations, setEducations }: PropsType) {
+function CVEducation({ educations, setEducations }: PropsType) {
     return (
         <div className="space-y-6">
             <div className="flex justify-between items-center">
-                <h2 className="text-2xl font-semibold text-white">Education</h2>
+                <h2 className="text-2xl font-semibold text-gray-900 dark:text-white">Education</h2>
                 <button
                     onClick={() => {
                         const newEdu: Education = {
@@ -46,12 +46,12 @@ function CVEduction({ educations, setEducations }: PropsType) {
             </div>
         
             {educations.map((edu, index) => (
-                <div key={edu.id} className="bg-gray-900 border border-gray-700 rounded-lg p-6">
+                <div key={edu.id} className="bg-white dark:bg-gray-900 border border-gray-300 dark:border-gray-700 rounded-lg p-6">
                     <div className="flex justify-between items-start mb-4">
-                        <h3 className="text-lg font-medium text-white">Education {index + 1}</h3>
+                        <h3 className="text-lg font-medium text-gray-900 dark:text-white">Education {index + 1}</h3>
                         <button
                             onClick={() => setEducations(educations.filter(e => e.id !== edu.id))}
-                            className="text-red-400 hover:text-red-300 transition-colors"
+                            className="text-red-500 dark:text-red-400 hover:text-red-600 dark:hover:text-red-300 transition-colors"
                         >
                             <Trash2 className="w-4 h-4" />
                         </button>
@@ -59,7 +59,7 @@ function CVEduction({ educations, setEducations }: PropsType) {
                 
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
                         <div>
-                            <label className="block text-sm font-medium text-gray-300 mb-2">Degree *</label>
+                            <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Degree *</label>
                             <input
                                 type="text"
                                 value={edu.degree}
@@ -68,12 +68,12 @@ function CVEduction({ educations, setEducations }: PropsType) {
                                         e.id === edu.id ? { ...e, degree: event.target.value } : e
                                     ));
                                 }}
-                                className="w-full bg-gray-800 border border-gray-600 rounded-lg px-4 py-3 text-white focus:outline-none focus:ring-2 focus:ring-purple-500"
+                                className="w-full bg-gray-50 dark:bg-gray-800 border border-gray-300 dark:border-gray-600 rounded-lg px-4 py-3 text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-purple-500"
                                 placeholder="Bachelor of Computer Science"
                             />
                         </div>
                         <div>
-                            <label className="block text-sm font-medium text-gray-300 mb-2">Institution *</label>
+                            <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Institution *</label>
                             <input
                                 type="text"
                                 value={edu.institution}
@@ -82,12 +82,12 @@ function CVEduction({ educations, setEducations }: PropsType) {
                                         e.id === edu.id ? { ...e, institution: event.target.value } : e
                                     ));
                                 }}
-                                className="w-full bg-gray-800 border border-gray-600 rounded-lg px-4 py-3 text-white focus:outline-none focus:ring-2 focus:ring-purple-500"
+                                className="w-full bg-gray-50 dark:bg-gray-800 border border-gray-300 dark:border-gray-600 rounded-lg px-4 py-3 text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-purple-500"
                                 placeholder="University of Antananarivo"
                             />
                         </div>
                         <div>
-                            <label className="block text-sm font-medium text-gray-300 mb-2">Location</label>
+                            <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Location</label>
                             <input
                                 type="text"
                                 value={edu.location}
@@ -96,12 +96,12 @@ function CVEduction({ educations, setEducations }: PropsType) {
                                         e.id === edu.id ? { ...e, location: event.target.value } : e
                                     ));
                                 }}
-                                className="w-full bg-gray-800 border border-gray-600 rounded-lg px-4 py-3 text-white focus:outline-none focus:ring-2 focus:ring-purple-500"
+                                className="w-full bg-gray-50 dark:bg-gray-800 border border-gray-300 dark:border-gray-600 rounded-lg px-4 py-3 text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-purple-500"
                                 placeholder="Antananarivo, MG"
                             />
                         </div>
                         <div>
-                            <label className="block text-sm font-medium text-gray-300 mb-2">Graduation Date</label>
+                            <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Graduation Date</label>
                             <input
                                 type="month"
                                 value={edu.graduationDate}
@@ -110,13 +110,13 @@ function CVEduction({ educations, setEducations }: PropsType) {
                                         e.id === edu.id ? { ...e, graduationDate: event.target.value } : e
                                     ));
                                 }}
-                                className="w-full bg-gray-800 border border-gray-600 rounded-lg px-4 py-3 text-white focus:outline-none focus:ring-2 focus:ring-purple-500"
+                                className="w-full bg-gray-50 dark:bg-gray-800 border border-gray-300 dark:border-gray-600 rounded-lg px-4 py-3 text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-purple-500"
                             />
                         </div>
                     </div>
 
                     <div className="mb-4">
-                        <label className="block text-sm font-medium text-gray-300 mb-2">GPA (Optional)</label>
+                        <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">GPA (Optional)</label>
                         <input
                             type="text"
                             value={edu.gpa}
@@ -125,18 +125,18 @@ function CVEduction({ educations, setEducations }: PropsType) {
                                     e.id === edu.id ? { ...e, gpa: event.target.value } : e
                                 ));
                             }}
-                            className="w-full md:w-1/3 bg-gray-800 border border-gray-600 rounded-lg px-4 py-3 text-white focus:outline-none focus:ring-2 focus:ring-purple-500"
+                            className="w-full md:w-1/3 bg-gray-50 dark:bg-gray-800 border border-gray-300 dark:border-gray-600 rounded-lg px-4 py-3 text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-purple-500"
                             placeholder="3.8"
                         />
                     </div>
 
                     <div>
-                        <label className="block text-sm font-medium text-gray-300 mb-2">Relevant Courses</label>
+                        <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Relevant Courses</label>
                         <div className="flex flex-wrap gap-2 mb-2">
                             {edu.relevant_courses?.map((course, idx) => (
                                 <span
                                     key={idx}
-                                    className="inline-flex items-center gap-1 bg-blue-600/20 text-blue-300 px-3 py-1 rounded-full text-sm"
+                                    className="inline-flex items-center gap-1 bg-blue-100 dark:bg-blue-600/20 text-blue-700 dark:text-blue-300 px-3 py-1 rounded-full text-sm"
                                 >
                                     {course}
                                     <button
@@ -146,7 +146,7 @@ function CVEduction({ educations, setEducations }: PropsType) {
                                                 e.id === edu.id ? { ...e, relevant_courses: newCourses } : e
                                             ));
                                         }}
-                                        className="text-blue-400 hover:text-blue-300"
+                                        className="text-blue-600 dark:text-blue-400 hover:text-blue-700 dark:hover:text-blue-300"
                                     >
                                         <X className="w-3 h-3" />
                                     </button>
@@ -165,7 +165,7 @@ function CVEduction({ educations, setEducations }: PropsType) {
                                     e.currentTarget.value = '';
                                 }
                             }}
-                            className="w-full bg-gray-800 border border-gray-600 rounded-lg px-4 py-2 text-white focus:outline-none focus:ring-2 focus:ring-purple-500"
+                            className="w-full bg-gray-50 dark:bg-gray-800 border border-gray-300 dark:border-gray-600 rounded-lg px-4 py-2 text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-purple-500"
                         />
                     </div>
                 </div>
@@ -174,4 +174,4 @@ function CVEduction({ educations, setEducations }: PropsType) {
     );
 }
 
-export default CVEduction;
+export default CVEducation;

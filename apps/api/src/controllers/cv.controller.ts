@@ -323,6 +323,8 @@ async function sendFileToExtractQueue(req: Request, res: Response) {
 async function saveExtractedCv(req: Request, res: Response) {
     try {
         const { status, error, data } = req.body;
+        if (status !== "success") throw new Error(error);
+
         const { userId, cvTitle, cvData } = data;
         let response: ApiResponse<null>;
 

@@ -129,6 +129,15 @@ function CVBuilder({ cvData }: { cvData: CVWithMetadata | null }) {
 
     const [ template, setTemplate ] = useState<string>('modern');
 
+    const updateCvState = (cv: CVWithMetadata) => {
+        setCvTitle(cv.title);
+        setPersonalInfo(cv.personalInfo);
+        setExperiences(cv.experiences);
+        setEducation(cv.education);
+        setSkills(cv.skills);
+        setProjects(cv.projects);
+    }
+
     useEffect(() => {
         const handleCvExtracted = async (data: any) => {
             if (data.status === "success") {
@@ -170,15 +179,6 @@ function CVBuilder({ cvData }: { cvData: CVWithMetadata | null }) {
             const supported = fileConfig.supportedType.keys().toArray().map((type) => type.toUpperCase()).join(', ');
             throw Error(`Unsupported file format. Upload ${supported} file.`);
         }
-    }
-
-    const updateCvState = (cv: CVWithMetadata) => {
-        setCvTitle(cv.title);
-        setPersonalInfo(cv.personalInfo);
-        setExperiences(cv.experiences);
-        setEducation(cv.education);
-        setSkills(cv.skills);
-        setProjects(cv.projects);
     }
 
     const handleFileImport = async (event: React.ChangeEvent<HTMLInputElement>) => {

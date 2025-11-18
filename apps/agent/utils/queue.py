@@ -2,10 +2,12 @@ import json
 import tempfile
 import httpx
 
-from config.api_config import api_url
+from config.api_config import api_url, internal_api_key
 from utils.redis import connect_redis
 from utils.minio import download_from_minio
 from scripts.cv import load_document, extraction
+
+http = httpx.AsyncClient()
 
 cv_queue = "bull:cv-processing"
 
@@ -41,8 +43,6 @@ async def queue_consumer():
 
                 cv_data = extraction(raw_text)
 
-                http = httpx.AsyncClient()
-
                 payload = {
                     "status": "success",
                     "error": None,
@@ -56,7 +56,19 @@ async def queue_consumer():
                 await http.post(
                     f"{api_url}/api/v1/cv/extract-result",
                     json=payload,
-                    # headers={"X-Service-Key", SERVICE_API_KEY},
+                    headers={"X-Service-Key": internal_api_key},
                 )
         except Exception as e:
             print(f"Error in queue consume: {e}")
+
+            payload = {
+                "status": "error",
+                "error": str(e),
+                "data": None,
+            }
+
+            await http.post(
+                f"{api_url}/api/v1/cv/extract-result",
+                json=payload,
+                headers={"X-Service-Key": internal_api_key},
+            )

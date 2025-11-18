@@ -1,6 +1,6 @@
 import { Router } from "express";
 
-import { validateToken } from "@middlewares/auth.middleware";
+import { validateServiceKey, validateToken } from "@middlewares/auth.middleware";
 import cvController from "@controllers/cv.controller";
 
 const cvRouter = Router();
@@ -44,6 +44,7 @@ cvRouter.post(
 
 cvRouter.post(
     "/extract-result",
+    validateServiceKey,
     cvController.saveExtractedCv,
 );
 

@@ -1,13 +1,13 @@
-import tempfile
-from fastapi import FastAPI, UploadFile, File, HTTPException, Depends
+import asyncio
+from fastapi import FastAPI, HTTPException, Depends
 from fastapi.security import APIKeyHeader
-from fastapi.responses import JSONResponse, FileResponse
+from fastapi.responses import FileResponse
 from fastapi.middleware.cors import CORSMiddleware
 
 from config.api_config import api_url, internal_api_key
-from scripts.cv import load_document, extraction
 from utils.cv_template import CVGenerator
 from utils.cv_type import CVExportRequest
+from utils.queue import queue_consumer
 
 app = FastAPI()
 
@@ -31,29 +31,29 @@ app.add_middleware(
 )
 
 
-@app.post("/agent/v1/cv/extract")
-async def extract_cv(file: UploadFile = File(...), api_key: str = Depends(verify_api_key)):
-    if file.content_type == "application/pdf":
-        file_extension = "pdf"
-    elif file.content_type == "application/vnd.openxmlformats-officedocument.wordprocessingml.document":
-        file_extension = "docx"
-    else:
-        raise HTTPException(status_code=400, detail="Unsupported file type.")
+# @app.post("/agent/v1/cv/extract")
+# async def extract_cv(file: UploadFile = File(...), api_key: str = Depends(verify_api_key)):
+#     if file.content_type == "application/pdf":
+#         file_extension = "pdf"
+#     elif file.content_type == "application/vnd.openxmlformats-officedocument.wordprocessingml.document":
+#         file_extension = "docx"
+#     else:
+#         raise HTTPException(status_code=400, detail="Unsupported file type.")
 
-    # Save uploaded file temporarily
-    with tempfile.NamedTemporaryFile(delete=False, suffix=f".{file_extension}") as tmp_file:
-        content = await file.read()
+#     # Save uploaded file temporarily
+#     with tempfile.NamedTemporaryFile(delete=False, suffix=f".{file_extension}") as tmp_file:
+#         content = await file.read()
 
-        tmp_file.write(content)
-        tmp_file_path = tmp_file.name
+#         tmp_file.write(content)
+#         tmp_file_path = tmp_file.name
 
-    try:
-        raw_text = load_document(tmp_file_path, file_extension)
-        cv_data =extraction(raw_text)
+#     try:
+#         raw_text = load_document(tmp_file_path, file_extension)
+#         cv_data = extraction(raw_text)
 
-        return JSONResponse(content=cv_data)
-    except Exception as e:
-        raise HTTPException(status_code=500, detail=f"Error processing CV file: {str(e)}")
+#         return JSONResponse(content=cv_data)
+#     except Exception as e:
+#         raise HTTPException(status_code=500, detail=f"Error processing CV file: {str(e)}")
 
 @app.post("/agent/v1/cv/export")
 async def export_cv(request: CVExportRequest, api_key: str = Depends(verify_api_key)):
@@ -73,3 +73,8 @@ async def export_cv(request: CVExportRequest, api_key: str = Depends(verify_api_
         )
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Error exporting CV to PDF: {str(e)}")
+
+
+@app.on_event("startup")
+async def startup_event():
+    asyncio.create_task(queue_consumer())

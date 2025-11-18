@@ -3,6 +3,8 @@ python-dotenv==1.1.1
 langchain==0.3.27
 langchain-community==0.3.30
 langchain-google-genai==2.1.12
+redis==7.0.1
+minio==7.2.18
 pypdf==6.1.1
 docx2txt==0.9
 reportlab==4.4.4

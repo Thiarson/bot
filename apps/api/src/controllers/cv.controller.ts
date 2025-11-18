@@ -1,8 +1,10 @@
 import axios from "axios";
-import FormData from "form-data";
+import { v4 as uuidv4 } from "uuid";
 import { pipeline } from "node:stream/promises";
 import { CvModel } from "model/cv.model";
-import { agentUrl, internalApiKey, requestTimeout } from "@config/api.config";
+import { agentUrl, internalApiKey, requestTimeout } from "config/api.config";
+import { generateSignedUrlForFileUpload } from "services/storage.service";
+import { validateFiletype, getFileExtenstionByType } from "../helpers/file-manager";
 
 import type { Request, Response } from "express";
 import type {
@@ -10,60 +12,63 @@ import type {
     CVData,
     CVWithMetadata,
     CVWithTitle,
+    PresignedUrl,
 } from "@bot/types";
 import { getSavedCv, upsertCV } from "@models/cv.repo";
+import { cvQueue } from "src/helpers/queue";
+import { addSocketEmitter } from "src/helpers/web-socket";
 
-async function parseCV(req: Request, res: Response) {
-    try {
-        if (!req.file) {
-            return res.status(400).json({
-                status: 'error',
-                message: 'No file uploaded'
-            });
-        }
+// async function parseCV(req: Request, res: Response) {
+//     try {
+//         if (!req.file) {
+//             return res.status(400).json({
+//                 status: 'error',
+//                 message: 'No file uploaded'
+//             });
+//         }
 
-        const formData = new FormData();
-        formData.append(
-            "file",
-            req.file.buffer,
-            {
-                filename: req.file.originalname,
-                contentType: req.file.mimetype,
-            }
-        )
+//         const formData = new FormData();
+//         formData.append(
+//             "file",
+//             req.file.buffer,
+//             {
+//                 filename: req.file.originalname,
+//                 contentType: req.file.mimetype,
+//             }
+//         )
 
-        const { status: code, data } = await axios.post(
-            `${agentUrl}/agent/v1/cv/extract`,
-            formData,
-            {
-                headers: {
-                    ...formData.getHeaders(),
-                    "X-API-KEY": internalApiKey,
-                },
-                timeout: requestTimeout,
-            },
-        );
+//         const { status: code, data } = await axios.post(
+//             `${agentUrl}/agent/v1/cv/extract`,
+//             formData,
+//             {
+//                 headers: {
+//                     ...formData.getHeaders(),
+//                     "X-API-KEY": internalApiKey,
+//                 },
+//                 timeout: requestTimeout,
+//             },
+//         );
 
-        const response: ApiResponse<CVData> = {
-            code: code,
-            status: code === 200 ? "success" : "error",
-            message: code === 200 ? "CV parsed successfully" : "CV parsing failed. Please try again",
-            data: data,
-        };
+//         const response: ApiResponse<CVData> = {
+//             code: code,
+//             status: code === 200 ? "success" : "error",
+//             message: code === 200 ? "CV parsed successfully" : "CV parsing failed. Please try again",
+//             data: data,
+//         };
 
-        return res.status(code).json(response);
-    } catch (e) {
-        console.error(e)
-        const response: ApiResponse<null> = {
-            code: 500,
-            status: "error",
-            message: "CV parsing failed. Please try again",
-            data: null,
-        };
+//         return res.status(code).json(response);
+//     } catch (e) {
+//         console.error(e)
+//         const response: ApiResponse<null> = {
+//             code: 500,
+//             status: "error",
+//             message: "CV parsing failed. Please try again",
+//             data: null,
+//         };
         
-        return res.status(500).json(response);
-    }
-}
+//         return res.status(500).json(response);
+//     }
+// }
 
 async function saved(req: Request, res: Response) {
     try {
@@ -237,9 +242,129 @@ async function exportCV(req: Request, res: Response) {
     }
 }
 
+async function generateSignedUrl(req: Request, res: Response) {
+    try {
+        const { filetype } = req.body;
+        const userId = req.user?.id;
+        let response: ApiResponse<PresignedUrl>;
+
+        const isValidFiletype = validateFiletype(filetype);
+        if (!isValidFiletype) {
+            return res.status(400).json({
+                code: 400,
+                status: "error",
+                message: "Unsupported file type",
+                data: null,
+            });
+        }
+
+        const fileExtension = getFileExtenstionByType(filetype);
+        const fileKey = `${userId}/${uuidv4()}.${fileExtension}`;
+
+        const signedUrl = await generateSignedUrlForFileUpload(fileKey, filetype);
+
+        response = {
+            code: 200,
+            status: "success",
+            message: "Presigned URL generated successfully",
+            data: {
+                signedUrl,
+                fileKey,
+                fileType: fileExtension,
+            },
+        };
+
+        return res.status(200).json(response);
+    } catch (e: any) {
+        console.error(e)
+        const response: ApiResponse<null> = {
+            code: 500,
+            status: "error",
+            message: "Failed generate presigned URL",
+            data: null,
+        };
+        
+        return res.status(500).json(response);
+    }
+}
+
+async function sendFileToExtractQueue(req: Request, res: Response) {
+    try {
+        const { fileKey, fileType, filename } = req.body;
+        const userId = req.user?.id;
+        let response: ApiResponse<null>;
+
+        await cvQueue.add(
+            "cv-extract",
+            { userId, fileKey, fileType, filename },
+        )
+
+        response = {
+            code: 200,
+            status: "success",
+            message: "File metadata processed successfully",
+            data: null,
+        };
+
+        return res.status(200).json(response);
+    } catch (e: any) {
+        console.error(e)
+        const response: ApiResponse<null> = {
+            code: 500,
+            status: "error",
+            message: "Failed to process file metadata",
+            data: null,
+        };
+        
+        return res.status(500).json(response);
+    }
+}
+
+async function saveExtractedCv(req: Request, res: Response) {
+    try {
+        const { status, error, data } = req.body;
+        const { userId, cvTitle, cvData } = data;
+        let response: ApiResponse<null>;
+
+        await Promise.all([
+            upsertCV(parseInt(userId), cvTitle),
+            CvModel.findOneAndUpdate(
+                { userId: parseInt(userId) },
+                cvData,
+                { upsert: true, new: true }
+            )
+        ]);
+
+        addSocketEmitter("cv:extracted", { status, error, data });
+
+        response = {
+            code: 200,
+            status: "success",
+            message: "Extracted CV saved successfully",
+            data: null,
+        };
+
+        return res.status(200).json(response);
+    } catch (e: any) {
+        console.error(e)
+        const response: ApiResponse<null> = {
+            code: 500,
+            status: "error",
+            message: "Failed to save extracted CV",
+            data: null,
+        };
+
+        addSocketEmitter("cv:extracted", { status: "error", error: "Failed to save extracted CV", data: null });
+        
+        return res.status(500).json(response);
+    }
+}
+
 export default {
-    parseCV,
     saved,
     saveCV,
     exportCV,
+    generateSignedUrl,
+    sendFileToExtractQueue,
+    saveExtractedCv,
 }

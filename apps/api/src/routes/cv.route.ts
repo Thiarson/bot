@@ -1,17 +1,16 @@
 import { Router } from "express";
 
 import { validateToken } from "@middlewares/auth.middleware";
-import { upload } from "@middlewares/upload.middleware";
 import cvController from "@controllers/cv.controller";
 
 const cvRouter = Router();
 
-cvRouter.post(
-    "/extract", 
-    validateToken,
-    upload.single("file"), 
-    cvController.parseCV,
-);
+// cvRouter.post(
+//     "/extract", 
+//     validateToken,
+//     upload.single("file"), 
+//     cvController.parseCV,
+// );
 
 cvRouter.get(
     "/saved",
@@ -29,6 +28,23 @@ cvRouter.post(
     "/export",
     validateToken,
     cvController.exportCV,
+);
+
+cvRouter.post(
+    "/presigned-url",
+    validateToken,
+    cvController.generateSignedUrl,
+);
+
+cvRouter.post(
+    "/file-metadata",
+    validateToken,
+    cvController.sendFileToExtractQueue,
+);
+
+cvRouter.post(
+    "/extract-result",
+    cvController.saveExtractedCv,
 );
 
 export default cvRouter;

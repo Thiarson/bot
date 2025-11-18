@@ -4,6 +4,8 @@ import { mongoUrl } from "@config/mongo.config";
 export async function connectToMongo(): Promise<Mongoose> {
     if (!mongoUrl) throw new Error("MONGODB_URI env var is required");
 
+    console.log("Connecting to Mongo...");
+
     return mongoose.connect(mongoUrl)
         .then((mongo) => {
             mongoose.connection.on("connected", () => { console.log("Mongo connected") });

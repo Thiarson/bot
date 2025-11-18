@@ -62,3 +62,9 @@ export type CVWithMetadata = CVData & {
   title: string
   lastSaved: Date
 };
+
+export type PresignedUrl = {
+  signedUrl: string
+  fileKey: string
+  fileType: string
+}

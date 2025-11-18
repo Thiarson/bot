@@ -3,25 +3,78 @@
 import createHttpRequest from "@/utils/http-request";
 import type {
     ApiResponse,
-    CVData,
     CVWithMetadata,
     CVWithTitle,
+    PresignedUrl,
 } from "@bot/types";
 
-export async function extractCV(formData: FormData) {
+interface FileMetadata {
+    fileKey: string;
+    fileType: string;
+    filename: string;
+}
+
+export async function requestPresignedUrl(file: File) {
     try {
         const http = await createHttpRequest();
-        const {  data: response } = await http.post<ApiResponse<CVData>>("/cv/extract", formData);
+        const {  data: response } = await http.post<ApiResponse<PresignedUrl>>("/cv/presigned-url", {
+            filetype: file.type,
+        });
 
         if (response.status === "error") throw new Error(response.message);
 
         return response.data;
     } catch (e: any) {
         if (e.code === 'ECONNREFUSED') throw Error("Check your internet connection and try again");
-        throw Error("Failed to import CV. Please try again");
+        throw Error("Failed to request presigned URL. Please try again");
     }
-    
 }
+
+export async function uploadFileUsingSignedUrl(signedUrl: string, file: File) {
+    try {
+        const response = await fetch(signedUrl, {
+            method: "PUT",
+            body: file,
+            headers: {
+                "Content-Type": file.type,
+            },
+        });
+        
+        if (!response.ok) throw new Error(`Upload failed with status: ${response.status}`);
+    } catch (e: any) {
+        if (e.code === 'ECONNREFUSED') throw Error("Check your internet connection and try again");
+        throw Error("Failed to upload file using signed URL. Please try again");
+    }
+}
+
+export async function notifyApiAfterFileUpload(metadata: FileMetadata) {
+    try {
+        const http = await createHttpRequest();
+        const {  data: response } = await http.post<ApiResponse<null>>("/cv/file-metadata", metadata);
+
+        if (response.status === "error") throw new Error(response.message);
+
+        return response.data;
+    } catch (e: any) {
+        if (e.code === 'ECONNREFUSED') throw Error("Check your internet connection and try again");
+        throw Error("Failed to send Metadata. Please try again");
+    }
+}
+
+// export async function extractCV(formData: FormData) {
+//     try {
+//         const http = await createHttpRequest();
+//         const {  data: response } = await http.post<ApiResponse<CVData>>("/cv/extract", formData);
+
+//         if (response.status === "error") throw new Error(response.message);
+
+//         return response.data;
+//     } catch (e: any) {
+//         if (e.code === 'ECONNREFUSED') throw Error("Check your internet connection and try again");
+//         throw Error("Failed to import CV. Please try again");
+//     }
+    
+// }
 
 export async function getSavedCv() {
     try {

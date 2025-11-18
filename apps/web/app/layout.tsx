@@ -1,4 +1,5 @@
-import { ThemeProvider } from "@/components/theme-provider";
+import { SocketProvider } from "@/context/socket-context";
+import { ThemeProvider } from "@/context/theme-provider";
 import type { Metadata } from "next";
 
 import "./globals.css";
@@ -16,14 +17,16 @@ export default function RootLayout({
   return (
     <html lang="en" suppressHydrationWarning>
       <body className="bg-gray-50 dark:bg-gray-900">
-        <ThemeProvider
-          attribute="class"
-          defaultTheme="system"
-          enableSystem
-          disableTransitionOnChange
-        >
-          {children}
-        </ThemeProvider>
+        <SocketProvider>
+          <ThemeProvider
+            attribute="class"
+            defaultTheme="system"
+            enableSystem
+            disableTransitionOnChange
+          >
+            {children}
+          </ThemeProvider>
+        </SocketProvider>
       </body>
     </html>
   );

@@ -17,7 +17,16 @@ import {
     Zap,
     ChevronDown,
 } from 'lucide-react';
-import { exportCV, extractCV, saveCV } from '@/lib/cv/actions';
+import { 
+    exportCV, 
+    saveCV, 
+    requestPresignedUrl, 
+    uploadFileUsingSignedUrl, 
+    notifyApiAfterFileUpload, 
+    getSavedCv, 
+} from '@/lib/cv/actions';
+import { addSoccketListener } from '@/utils/web-socket';
+import { useSocket } from '@/context/socket-context';
 
 import { DashboardSkeleton } from '@/components/boost/skeleton';
 import CVTemplate from '@/components/cv/cv-template';
@@ -35,6 +44,12 @@ import type { Experience } from '@/components/cv/cv-experience';
 import type { Education } from '@/components/cv/cv-eduction';
 import type { Skill } from '@/components/cv/cv-skill';
 import type { Project } from '@/components/cv/cv-project';
+
+export const EVENTS = {
+  CV: {
+    EXTRACTED: "cv:extracted",
+  },
+} as const;
 
 function getEmptyCV() {
     const personalInfo: PersonalInfo = {
@@ -77,6 +92,7 @@ function isEmptyCV(cv: CVWithTitle) {
 
 function CVBuilder({ cvData }: { cvData: CVWithMetadata | null }) {
     const { status } = useSession();
+    const { socket } = useSocket();
     const [ activeSection, setActiveSection ] = useState<string>('templates');
     const { notifications, showNotification, closeNotification } = useNotification();
     const [ isLoading, setIsLoading ] = useState<boolean>(false)
@@ -113,14 +129,31 @@ function CVBuilder({ cvData }: { cvData: CVWithMetadata | null }) {
 
     const [ template, setTemplate ] = useState<string>('modern');
 
+    useEffect(() => {
+        const handleCvExtracted = async (data: any) => {
+            if (data.status === "success") {
+                const cv = await getSavedCv();
+
+                if (cv) updateCvState(cv);
+
+                showNotification('CV parsed successfully!');
+            } else {
+                showNotification(data.error, "error");
+            }
+        }
+
+        addSoccketListener(EVENTS.CV.EXTRACTED, handleCvExtracted);
+
+        return () => {
+            socket?.off(EVENTS.CV.EXTRACTED, handleCvExtracted);
+        }
+    }, []);
+
     if (status === "loading") {
         return <DashboardSkeleton />;
     }
-
-    const handleFileImport = async (event: React.ChangeEvent<HTMLInputElement>) => {
-        const file = event.target.files?.[0];
-        if (!file) return;
-        
+    
+    const validateCVFileForUpload = (file: File) => {
         const fileConfig = {
             maxSize: { name: "5MB", value: (5 * 1024 * 1024) },
             supportedType: new Map<string, string>([
@@ -130,32 +163,40 @@ function CVBuilder({ cvData }: { cvData: CVWithMetadata | null }) {
         }
 
         if (file.size > fileConfig.maxSize.value) {
-            showNotification(`File size exceeds ${fileConfig.maxSize.name}.`, "warning");
-            return;
+            throw Error(`File size exceeds ${fileConfig.maxSize.name}.`);
         }
 
         if (!fileConfig.supportedType.values().toArray().includes(file.type)) {
             const supported = fileConfig.supportedType.keys().toArray().map((type) => type.toUpperCase()).join(', ');
-            showNotification(`Unsupported file format. Upload ${supported} file.`, "warning");
-            return;
+            throw Error(`Unsupported file format. Upload ${supported} file.`);
         }
+    }
 
-        setIsLoading(true);
+    const updateCvState = (cv: CVWithMetadata) => {
+        setCvTitle(cv.title);
+        setPersonalInfo(cv.personalInfo);
+        setExperiences(cv.experiences);
+        setEducation(cv.education);
+        setSkills(cv.skills);
+        setProjects(cv.projects);
+    }
+
+    const handleFileImport = async (event: React.ChangeEvent<HTMLInputElement>) => {
+        const file = event.target.files?.[0];
+        if (!file) return;
 
         try {
-            const formData = new FormData();
-            formData.append('file', file);
+            validateCVFileForUpload(file);
+            setIsLoading(true);
 
-            const cv = await extractCV(formData);
+            const { signedUrl, fileKey, fileType } = await requestPresignedUrl(file);
+            const filename = file.name.split(".")[0];
 
-            setCvTitle(file.name);
-            setPersonalInfo(cv.personalInfo);
-            setExperiences(cv.experiences);
-            setEducation(cv.education);
-            setSkills(cv.skills);
-            setProjects(cv.projects);
+            await uploadFileUsingSignedUrl(signedUrl, file);
+
+            await notifyApiAfterFileUpload({ fileKey, fileType, filename });
             
-            showNotification('CV imported successfully!');
+            showNotification('CV is being processed!', "info");
         } catch (e: any) {
             showNotification(e.message, "error");
         } finally {

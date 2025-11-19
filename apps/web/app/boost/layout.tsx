@@ -6,26 +6,31 @@ import Sidebar from '@/components/boost/sidebar';
 export default function Layout({ children }: { children: React.ReactNode }) {
   return (
     <SessionProvider>
-      <div className="h-screen flex flex-col overflow-hidden">
+      <div className="h-screen flex flex-col overflow-hidden bg-gray-50 dark:bg-gray-950">
         {/* Fixed Header */}
-        <div className="flex-shrink-0">
+        <header className="flex-shrink-0 z-30">
           <Navbar/>
-        </div>
+        </header>
 
         <div className="flex flex-1 min-h-0">
           {/* Responsive Fixed Sidebar */}
-          <div className="flex-shrink-0">
+          <aside className="flex-shrink-0">
             <Sidebar/>
-          </div>
+          </aside>
 
           {/* Scrollable Main Content */}
-          <main className="flex-1 overflow-y-auto min-w-0">
-            <div className="w-full px-4 md:px-6 lg:px-8">
+          <main 
+            id="main-content"
+            className="flex-1 overflow-y-auto min-w-0"
+            role="main"
+            aria-label="Main content"
+          >
+            <div className="w-full min-h-full px-4 py-2 md:px-6 lg:px-8 max-w-[1600px] mx-auto">
               {children}
             </div>
           </main>
         </div>
       </div>
     </SessionProvider>
-  )
+  );
 }

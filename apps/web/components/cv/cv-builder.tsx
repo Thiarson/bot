@@ -25,9 +25,8 @@ import {
     notifyApiAfterFileUpload, 
     getSavedCv, 
 } from '@/lib/cv/actions';
-import { addSoccketListener } from '@/utils/web-socket';
-import { useSocket } from '@/context/socket-context';
 import { useNotification } from '@/context/notification-context';
+import { useCVExtraction } from '@/context/events-context';
 
 import { DashboardSkeleton } from '@/components/boost/skeleton';
 import CVTemplate from '@/components/cv/cv-template';
@@ -44,12 +43,6 @@ import type { Experience } from '@/components/cv/cv-experience';
 import type { Education } from '@/components/cv/cv-eduction';
 import type { Skill } from '@/components/cv/cv-skill';
 import type { Project } from '@/components/cv/cv-project';
-
-export const EVENTS = {
-  CV: {
-    EXTRACTED: "cv:extracted",
-  },
-} as const;
 
 function getEmptyCV() {
     const personalInfo: PersonalInfo = {
@@ -92,7 +85,6 @@ function isEmptyCV(cv: CVWithTitle) {
 
 function CVBuilder({ cvData }: { cvData: CVWithMetadata | null }) {
     const { status } = useSession();
-    const { socket } = useSocket();
     const [ activeSection, setActiveSection ] = useState<string>('templates');
     const { showNotification } = useNotification();
     const [ isLoading, setIsLoading ] = useState<boolean>(false)
@@ -116,17 +108,11 @@ function CVBuilder({ cvData }: { cvData: CVWithMetadata | null }) {
     const cv = cvData ?? getEmptyCV();
 
     const [ cvTitle, setCvTitle ] = useState<string>(cv.title);
-
     const [ personalInfo, setPersonalInfo ] = useState<PersonalInfo>(cv.personalInfo);
-
     const [ experiences, setExperiences ] = useState<Experience[]>(cv.experiences);
-
     const [ education, setEducation ] = useState<Education[]>(cv.education);
-
     const  [ skills, setSkills ] = useState<Skill[]>(cv.skills);
-
     const [ projects, setProjects ] = useState<Project[]>(cv.projects);
-
     const [ template, setTemplate ] = useState<string>('modern');
 
     const updateCvState = (cv: CVWithMetadata) => {
@@ -138,25 +124,10 @@ function CVBuilder({ cvData }: { cvData: CVWithMetadata | null }) {
         setProjects(cv.projects);
     }
 
-    useEffect(() => {
-        const handleCvExtracted = async (data: any) => {
-            if (data.status === "success") {
-                const cv = await getSavedCv();
-
-                if (cv) updateCvState(cv);
-
-                showNotification('CV parsed successfully!');
-            } else {
-                showNotification(data.error, "error");
-            }
-        }
-
-        addSoccketListener(EVENTS.CV.EXTRACTED, handleCvExtracted);
-
-        return () => {
-            socket?.off(EVENTS.CV.EXTRACTED, handleCvExtracted);
-        }
-    }, []);
+    useCVExtraction(async (data) => {
+        const cv = await getSavedCv();
+        if (cv) updateCvState(cv);
+    });
 
     if (status === "loading") {
         return <DashboardSkeleton />;
@@ -395,7 +366,7 @@ function CVBuilder({ cvData }: { cvData: CVWithMetadata | null }) {
                         <div className="space-y-3">
                             {sidebarItems.map((item) => {
                                 const Icon = item.icon;
-                                const isCompleted = activeSection === item.id; // Simplified for demo
+                                const isCompleted = activeSection === item.id;
                                 return (
                                     <button
                                         key={item.id}

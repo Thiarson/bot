@@ -27,6 +27,7 @@ import {
 } from '@/lib/cv/actions';
 import { addSoccketListener } from '@/utils/web-socket';
 import { useSocket } from '@/context/socket-context';
+import { useNotification } from '@/context/notification-context';
 
 import { DashboardSkeleton } from '@/components/boost/skeleton';
 import CVTemplate from '@/components/cv/cv-template';
@@ -36,7 +37,6 @@ import CVEduction from '@/components/cv/cv-eduction';
 import CVSkill from '@/components/cv/cv-skill';
 import CVProject from '@/components/cv/cv-project';
 import LoadingModal from '@/components/loading';
-import NotificationContainer, { useNotification } from '@/components/notification';
 
 import type { CVWithMetadata, CVWithTitle } from '@bot/types';
 import type { PersonalInfo } from '@/components/cv/cv-personal-info';
@@ -94,7 +94,7 @@ function CVBuilder({ cvData }: { cvData: CVWithMetadata | null }) {
     const { status } = useSession();
     const { socket } = useSocket();
     const [ activeSection, setActiveSection ] = useState<string>('templates');
-    const { notifications, showNotification, closeNotification } = useNotification();
+    const { showNotification } = useNotification();
     const [ isLoading, setIsLoading ] = useState<boolean>(false)
     const [ lastSaved, setLastSaved ] = useState<Date | null>(cvData?.lastSaved ??  null);
     const [ isSaving, setIsSaving ] = useState(false);
@@ -448,7 +448,6 @@ function CVBuilder({ cvData }: { cvData: CVWithMetadata | null }) {
             </div>
 
             <LoadingModal message='Importing CV data' isLoading={isLoading} />
-            <NotificationContainer notifications={notifications} onClose={closeNotification} />
 
             <style jsx>{`
                 .slider::-webkit-slider-thumb {

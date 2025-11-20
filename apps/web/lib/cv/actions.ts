@@ -43,7 +43,7 @@ export async function uploadFileUsingSignedUrl(signedUrl: string, file: File) {
         if (!response.ok) throw new Error(`Upload failed with status: ${response.status}`);
     } catch (e: any) {
         if (e.code === 'ECONNREFUSED') throw Error("Check your internet connection and try again");
-        throw Error("Failed to upload file using signed URL. Please try again");
+        throw Error("Failed to upload file using signed URL");
     }
 }
 
